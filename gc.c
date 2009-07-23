@@ -292,6 +292,14 @@ struct gc_list {
 
 #define CALC_EXACT_MALLOC_SIZE 0
 
+struct savepoint;
+struct sweepable_ref;
+
+typedef struct remembered_set {
+    RVALUE *obj;
+    struct remembered_set *next;
+} remembered_set_t;
+
 typedef struct rb_objspace {
     struct {
 	size_t limit;
@@ -310,6 +318,11 @@ typedef struct rb_objspace {
 	RVALUE *range[2];
 	RVALUE *freed;
     } heap;
+    struct {
+        remembered_set_t *ptr;
+        remembered_set_t *freed;
+    } remembered_set;
+    struct savepoint *savepoint;
     struct {
 	int dont_gc;
 	int during_gc;
@@ -334,6 +347,20 @@ typedef struct rb_objspace {
     unsigned int count;
     int gc_stress;
 } rb_objspace_t;
+struct sweepable_ref {
+    VALUE referent;
+    struct sweepable_ref *prev;
+    struct sweepable_ref *next;
+    struct savepoint *savepoint;
+};
+struct savepoint {
+    rb_objspace_t *objspace;
+    struct sweepable_ref *refs;
+    struct savepoint *prev;
+    struct savepoint *next;
+};
+static VALUE rb_cSavePoint;
+static VALUE rb_cSweepableRef;
 
 #if defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE
 #define rb_objspace (*GET_VM()->objspace)
@@ -1021,14 +1048,129 @@ rb_during_gc(void)
     return during_gc;
 }
 
+
+static void 
+sweepable_ref_mark(struct sweepable_ref *ref) 
+{
+    rb_gc_mark(ref->referent);
+}
+static void 
+sweepable_ref_free(struct sweepable_ref *ref) 
+{
+    ref->referent = Qundef;
+    if (ref->prev) ref->prev->next = ref->next;
+    if (ref->next) ref->next->prev = ref->prev;
+    if (ref->savepoint->refs == ref) ref->savepoint->refs = ref->next;
+    ref->prev = ref->next = 0;
+}
+
+
+            static int obj_free(rb_objspace_t*, VALUE obj);
+static VALUE
+savepoint_rollback(VALUE spval)
+{
+    struct sweepable_ref *ref;
+    struct savepoint *sp;
+    Data_Get_Struct(spval, struct savepoint, sp);
+
+    sp->objspace->savepoint = sp->prev;
+    if (sp->prev) sp->prev->next = NULL;
+    for ( ; sp; sp = sp->next) {
+        for (ref = sp->refs; ref; ref = ref->prev) {
+            if (TYPE(ref->referent) == T_CLASS) {
+            }
+            obj_free(sp->objspace, ref->referent);
+            OBJSETUP(ref->referent, rb_cNilClass, T_FLOAT);
+        }
+    }
+    return Qnil;
+}
+
+static void
+savepoint_mark(struct savepoint *sp)
+{
+    struct sweepable_ref *ref;
+    for (ref = sp->refs; ref; ref = ref->next) {
+        sweepable_ref_mark(ref);
+    }
+    if (sp->next) savepoint_mark(sp->next);
+}
+static void
+savepoint_free(struct savepoint *sp)
+{
+    struct sweepable_ref *ref;
+    for (ref = sp->refs; ref; ref = ref->next) {
+        sweepable_ref_free(ref);
+    }
+}
+
+static VALUE
+objspace_savepoint(VALUE recv)
+{
+    struct RData *data;
+    struct savepoint *sp;
+#if defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE
+    rb_objspace_t *objspace = th->vm->objspace;
+#else
+    rb_objspace_t *objspace = &rb_objspace;
+#endif
+    sp = ALLOC(struct savepoint);
+    sp->objspace = objspace;
+    sp->next = sp->prev = 0;
+    sp->refs = 0;
+    if (objspace->savepoint) {
+        objspace->savepoint->next = sp; 
+        sp->prev = objspace->savepoint;
+    }
+    objspace->savepoint = sp;
+    
+    data = (struct RData*)rb_newobj_from_heap(objspace);
+    OBJSETUP(data, rb_cSavePoint, T_DATA);
+    data->dmark = &savepoint_mark;
+    data->dfree = &savepoint_free;
+    data->data = sp;
+    return (VALUE)data;
+}
+
+static VALUE
+sweepable_ref_method_missing(int argc, VALUE *argv, VALUE self)
+{
+    ID id;
+    struct sweepable_ref *ref = (struct sweepable_ref*)DATA_PTR(self);
+    if (argc == 0 || !SYMBOL_P(argv[0])) {
+	rb_raise(rb_eArgError, "no id given");
+    }
+    id = SYM2ID(argv[0]);
+
+    return rb_funcall2(ref->referent, id, argc-1, argv+1);
+}
+
+static VALUE
+new_sweepable_ref(rb_objspace_t *objspace, VALUE referent)
+{
+    struct sweepable_ref *ref;
+
+    ref = ALLOC(struct sweepable_ref);
+    ref->referent = referent;
+    ref->next = ref->prev = 0;
+    ref->savepoint = objspace->savepoint;
+    if (objspace->savepoint->refs) {
+        objspace->savepoint->refs->next = ref;
+        ref->prev = objspace->savepoint->refs;
+    }
+    objspace->savepoint->refs = ref;
+    return Qnil;
+}
+
 VALUE
 rb_newobj(void)
 {
+    VALUE v = Qundef;
 #if USE_VALUE_CACHE || (defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE)
     rb_thread_t *th = GET_THREAD();
 #endif
 #if USE_VALUE_CACHE
-    VALUE v = *th->value_cache_ptr;
+    v = *th->value_cache_ptr;
 #endif
 #if defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE
     rb_objspace_t *objspace = th->vm->objspace;
@@ -1055,10 +1197,13 @@ rb_newobj(void)
     printf("cache index: %d, v: %p, th: %p\n",
 	   th->value_cache_ptr - th->value_cache, v, th);
 #endif
-    return v;
 #else
-    return rb_newobj_from_heap(objspace);
+    v = rb_newobj_from_heap(objspace);
 #endif
+    if (UNLIKELY(objspace->savepoint)) {
+        new_sweepable_ref(objspace, v);
+    }
+    return v;
 }
 
 NODE*
@@ -3119,4 +3264,10 @@ Init_GC(void)
     rb_define_singleton_method(rb_mGC, "malloc_allocated_size", gc_malloc_allocated_size, 0);
     rb_define_singleton_method(rb_mGC, "malloc_allocations", gc_malloc_allocations, 0);
 #endif
+
+    rb_cSweepableRef = rb_define_class_under(rb_mObSpace, "SweepableRef", rb_cBasicObject);
+    rb_define_method(rb_cSweepableRef, "method_missing", sweepable_ref_method_missing, -1);
+    rb_cSavePoint = rb_define_class_under(rb_mObSpace, "SavePoint", rb_cObject);
+    rb_define_method(rb_cSavePoint, "rollback", savepoint_rollback, 0);
+    rb_define_module_function(rb_mObSpace, "savepoint", objspace_savepoint, 0);
 }
