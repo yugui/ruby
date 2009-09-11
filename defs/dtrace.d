@@ -10,6 +10,12 @@ provider ruby {
     probe gc__begin();
     probe gc__end();
 
+    /* threads and fibers */
+    probe thread__init(VALUE thread, char *sourcefile, int sourceline);
+    probe thread__term(VALUE thread, char *sourcefile, int sourceline);
+    probe thread__enter(VALUE thread, char *sourcefile, int sourceline);
+    probe thread__leave(VALUE thread, char *sourcefile, int sourceline);
+
     /* Some initial memory type probes */
     probe object__create(VALUE obj, char *classname, char *sourcefile, int sourceline);
     probe object__free(VALUE obj);

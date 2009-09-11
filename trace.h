@@ -19,6 +19,10 @@
 # define TRACE_LINE_ENABLED() 0
 # define TRACE_GC_BEGIN_ENABLED() 0
 # define TRACE_GC_END_ENABLED() 0
+# define TRACE_THREAD_INIT_ENABLED()  0
+# define TRACE_THREAD_TERM_ENABLED()  0
+# define TRACE_THREAD_LEAVE_ENABLED() 0
+# define TRACE_THREAD_ENTER_ENABLED() 0
 # define TRACE_OBJECT_CREATE_ENABLED() 0
 # define TRACE_OBJECT_FREE_ENABLED() 0
 # define TRACE_INSN_ENTRY_ENABLED() 0
@@ -32,6 +36,10 @@
 # define FIRE_LINE(sourcename, sourceline)
 # define FIRE_GC_BEGIN()
 # define FIRE_GC_END()
+# define FIRE_THREAD_INIT(th, sourcefile, sourceline)
+# define FIRE_THREAD_TERM(th, sourcefile, sourceline)
+# define FIRE_THREAD_LEAVE(th, sourcefile, sourceline)
+# define FIRE_THREAD_ENTER(th, sourcefile, sourceline)
 # define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline)
 # define FIRE_OBJECT_FREE(obj)
 # define FIRE_INSN_ENTRY(insnname, operands, sourcename, sourceline)
@@ -47,6 +55,10 @@
 # define TRACE_LINE_ENABLED()          RUBY_LINE_ENABLED()
 # define TRACE_GC_BEGIN_ENABLED()      RUBY_GC_BEGIN_ENABLED()
 # define TRACE_GC_END_ENABLED()        RUBY_GC_END_ENABLED()
+# define TRACE_THREAD_INIT_ENABLED()  RUBY_THREAD_INIT_ENABLED()
+# define TRACE_THREAD_TERM_ENABLED()  RUBY_THREAD_TERM_ENABLED()
+# define TRACE_THREAD_LEAVE_ENABLED()  RUBY_THREAD_LEAVE_ENABLED()
+# define TRACE_THREAD_ENTER_ENABLED()  RUBY_THREAD_ENTER_ENABLED()
 # define TRACE_OBJECT_CREATE_ENABLED() RUBY_OBJECT_CREATE_ENABLED()
 # define TRACE_OBJECT_FREE_ENABLED()   RUBY_OBJECT_FREE_ENABLED()
 # define TRACE_INSN_ENTRY_ENABLED()    RUBY_INSN_ENTRY_ENABLED()
@@ -63,10 +75,16 @@
    RUBY_RESCUE(exception, sourcename, sourceline)
 # define FIRE_LINE(sourcename, sourceline) \
    RUBY_LINE(sourcename, sourceline)
-# define FIRE_GC_BEGIN() \
-   RUBY_GC_BEGIN()
-# define FIRE_GC_END() \
-   RUBY_GC_END()
+# define FIRE_GC_BEGIN()     RUBY_GC_BEGIN()
+# define FIRE_GC_END()       RUBY_GC_END()
+# define FIRE_THREAD_INIT(th, sourcefile, sourceline) \
+   RUBY_THREAD_INIT(th, (char*)sourcefile, sourceline)
+# define FIRE_THREAD_TERM(th, sourcefile, sourceline) \
+   RUBY_THREAD_TERM(th, (char*)sourcefile, sourceline)
+# define FIRE_THREAD_LEAVE(th, sourcefile, sourceline) \
+   RUBY_THREAD_LEAVE(th, (char*)sourcefile, sourceline)
+# define FIRE_THREAD_ENTER(th, sourcefile, sourceline) \
+   RUBY_THREAD_ENTER(th, (char*)sourcefile, sourceline)
 # define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline) \
    RUBY_OBJECT_CREATE(obj, (char*)classname, (char*)sourcefile, sourceline)
 # define FIRE_OBJECT_FREE(obj) \
