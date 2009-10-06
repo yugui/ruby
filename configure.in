@@ -357,6 +357,8 @@ fi
 MAKEDIRS="$MKDIR_P"
 AC_SUBST(MAKEDIRS)
 
+AC_CHECK_TOOL(DTRACE, dtrace)
+
 AC_CHECK_TOOL(DOT, dot)
 AC_CHECK_TOOL(DOXYGEN, doxygen)
 if test x"$DOXYGEN" = x; then
@@ -1021,7 +1023,8 @@ AC_CHECK_HEADERS(limits.h sys/file.h sys/ioctl.h sys/syscall.h\
 		 syscall.h pwd.h grp.h a.out.h utime.h direct.h sys/resource.h \
 		 sys/mkdev.h sys/utime.h xti.h netinet/in_systm.h float.h ieeefp.h \
 		 ucontext.h intrinsics.h langinfo.h locale.h sys/sendfile.h time.h \
-		 net/socket.h sys/socket.h)
+		 net/socket.h sys/socket.h sys/sdt.h)
+
 
 dnl Check additional types.
 RUBY_CHECK_SIZEOF(rlim_t, [int long "long long"], [], [
@@ -2064,6 +2067,44 @@ case "$target_os" in
     DLDLIBS="$DLDLIBS -lc"
     ;;
 esac
+
+AC_ARG_WITH(tracing-model,
+            AS_HELP_STRING([--with-tracing-model=MODEL], [use MODEL for tracing ruby's internal. [[auto]] (none|weakref|dtrace|auto)]),
+            [TRACING_MODEL=$withval], [TRACING_MODEL=auto])
+
+if test "${TRACING_MODEL}" = "auto"; then
+    if test ! -z "$ac_cv_header_sys_sdt_h"; then
+        TRACING_MODEL=dtrace
+    else
+        TRACING_MODEL=none
+    fi
+fi
+
+AC_DEFINE(RUBY_TRACING_MODEL_NONE, 0)
+AC_DEFINE(RUBY_TRACING_MODEL_WEAKREF, 1)
+AC_DEFINE(RUBY_TRACING_MODEL_DTRACE, 2)
+case "${TRACING_MODEL}" in
+    when(none)
+        AC_DEFINE(RUBY_TRACING_MODEL, 0, [none])
+        ;;
+    when(weakref)
+        AC_DEFINE(RUBY_TRACING_MODEL, 1, [weakref])
+	AC_MSG_ERROR([TODO])
+        ;;
+    when(dtrace)
+        if test -z "$DTRACE"; then
+            AC_MSG_ERROR([dtrace(1) is missing])
+	elif test -z "$ac_cv_header_sys_sdt_h"; then
+            AC_MSG_ERROR([sys/dtrace.h is missing])
+        else
+            AC_DEFINE(RUBY_TRACING_MODEL, 2, [dtrace])
+        fi
+        ;;
+    when(*)
+        AC_MSG_ERROR([unknown tracing model: ${TRACING_MODEL}])
+        ;;
+esac
+AC_SUBST(TRACING_MODEL)
 
 AC_ARG_WITH(soname,
 	AS_HELP_STRING([--with-soname=SONAME], [base name of shared library]),

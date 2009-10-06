@@ -58,6 +58,7 @@ rb_call_inits(void)
     CALL(Cont);
     CALL(Rational);
     CALL(Complex);
+    CALL(Tracer);
     CALL(version);
 }
 #undef CALL

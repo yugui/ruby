@@ -92,6 +92,7 @@ LIBRUBYARG_STATIC = @LIBRUBYARG_STATIC@
 LIBRUBYARG_SHARED = @LIBRUBYARG_SHARED@
 
 THREAD_MODEL  = @THREAD_MODEL@
+TRACING_MODEL = @TRACING_MODEL@
 
 PREP          = @PREP@
 ARCHFILE      = @ARCHFILE@
@@ -115,8 +116,10 @@ IFCHANGE      = $(srcdir)/tool/ifchange
 SET_LC_MESSAGES = env LC_MESSAGES=C
 OBJDUMP       = @OBJDUMP@
 OBJCOPY       = @OBJCOPY@
+DTRACE        = @DTRACE@
 VCS           = @VCS@
 VCSUP         = @VCSUP@
+DOXYGEN	      = @DOXYGEN@
 
 OBJEXT        = @OBJEXT@
 ASMEXT        = S
@@ -155,7 +158,7 @@ $(LIBRUBY_A):
 
 $(LIBRUBY_SO):
 		@-$(PRE_LIBRUBY_UPDATE)
-		$(LDSHARED) $(DLDFLAGS) $(OBJS) $(DLDOBJS) $(SOLIBS) $(OUTFLAG)$@
+		$(LDSHARED) $(DLDFLAGS) $(OBJS) $(DLDOBJS) $(TRACEOBJ) $(SOLIBS) $(OUTFLAG)$@
 		-$(OBJCOPY) -w -L '@EXPORT_PREFIX@Init_*' -L '@EXPORT_PREFIX@*_threadptr_*' $@
 		@-$(MINIRUBY) -e 'ARGV.each{|link| File.delete link if File.exist? link; \
 						  File.symlink "$(LIBRUBY_SO)", link}' \

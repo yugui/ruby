@@ -16,6 +16,7 @@
 #include "gc.h"
 #include "ruby/vm.h"
 #include "ruby/encoding.h"
+#include "trace.h"
 
 #define numberof(array) (int)(sizeof(array) / sizeof((array)[0]))
 
@@ -416,17 +417,15 @@ rb_longjmp(int tag, volatile VALUE mesg)
 	}
     }
 
-    if (rb_threadptr_set_raised(th)) {
-	th->errinfo = exception_error;
-	rb_threadptr_reset_raised(th);
-	JUMP_TAG(TAG_FATAL);
-    }
-
     rb_trap_restore_mask();
 
-    if (tag != TAG_FATAL) {
+    if (tag == TAG_FATAL) {
+        if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE(0, (char*)"fatal", (char*)file, line);
+    }
+    else {
 	EXEC_EVENT_HOOK(th, RUBY_EVENT_RAISE, th->cfp->self,
 			0 /* TODO: id */, 0 /* TODO: klass */);
+        if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE(mesg, (char*)rb_class2name(CLASS_OF(mesg)), (char*)file, line);
     }
 
     rb_thread_raised_clear(th);

@@ -83,6 +83,7 @@ COMMONOBJS    = array.$(OBJEXT) \
 		vm_dump.$(OBJEXT) \
 		thread.$(OBJEXT) \
 		cont.$(OBJEXT) \
+		tracer.$(OBJEXT) \
 		$(BUILTIN_ENCOBJS) \
 		$(BUILTIN_TRANSOBJS) \
 		$(MISSING)
@@ -157,7 +158,7 @@ Doxyfile: $(srcdir)/template/Doxyfile.tmpl $(PREP) $(srcdir)/tool/generic_erb.rb
 
 program: $(PROGRAM)
 
-$(PROGRAM): $(LIBRUBY) $(MAINOBJ) $(OBJS) $(EXTOBJS) $(SETUP) $(PREP)
+$(PROGRAM): $(LIBRUBY) $(MAINOBJ) $(OBJS) $(EXTOBJS) $(TRACEOBJ) $(SETUP) $(PREP)
 
 $(LIBRUBY_A):	$(OBJS) $(DMYEXT) $(ARCHFILE)
 
@@ -511,7 +512,8 @@ win32.$(OBJEXT): {$(VPATH)}win32.c $(RUBY_H_INCLUDES)
 ###
 
 RUBY_H_INCLUDES    = {$(VPATH)}ruby.h {$(VPATH)}config.h {$(VPATH)}defines.h \
-		     {$(VPATH)}intern.h {$(VPATH)}missing.h {$(VPATH)}st.h
+		     {$(VPATH)}intern.h {$(VPATH)}missing.h {$(VPATH)}st.h \
+		     {$(VPATH)}trace.h {$(VPATH)}trace_$(TRACING_MODEL).h
 ENCODING_H_INCLUDES= {$(VPATH)}encoding.h {$(VPATH)}oniguruma.h
 ID_H_INCLUDES      = {$(VPATH)}id.h
 VM_CORE_H_INCLUDES = {$(VPATH)}vm_core.h {$(VPATH)}vm_opts.h \
@@ -677,6 +679,12 @@ newline.c: $(srcdir)/enc/trans/newline.trans $(srcdir)/tool/transcode-tblgen.rb
 newline.$(OBJEXT): {$(VPATH)}newline.c {$(VPATH)}defines.h \
   {$(VPATH)}intern.h {$(VPATH)}missing.h {$(VPATH)}st.h \
   {$(VPATH)}transcode_data.h {$(VPATH)}ruby.h {$(VPATH)}config.h
+
+tracer.$(OBJEXT): $(RUBY_H_INCLUDES)
+trace_dtrace.h: $(srcdir)/defs/dtrace.d
+	$(DTRACE) -h -o $@ -s $(srcdir)/defs/dtrace.d
+# dummy target
+trace_none.h:
 
 INSNS2VMOPT = --srcdir="$(srcdir)"
 

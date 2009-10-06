@@ -1,0 +1,84 @@
+/**********************************************************************
+
+  trace.h -
+
+  $Author$
+
+  Copyright (C) 2009 Yuki Sonoda (Yugui)
+
+**********************************************************************/
+
+#ifndef RUBY_TRACE_H
+#define RUBY_TRACE_H
+
+#if RUBY_TRACING_MODEL == RUBY_TRACING_MODEL_NONE
+# define TRACE_METHOD_ENTRY_ENABLED() 0
+# define TRACE_METHOD_RETURN_ENABLED() 0
+# define TRACE_RAISE_ENABLED() 0
+# define TRACE_RESCUE_ENABLED() 0
+# define TRACE_LINE_ENABLED() 0
+# define TRACE_GC_BEGIN_ENABLED() 0
+# define TRACE_GC_END_ENABLED() 0
+# define TRACE_OBJECT_CREATE_ENABLED() 0
+# define TRACE_OBJECT_FREE_ENABLED() 0
+# define TRACE_INSN_ENTRY_ENABLED() 0
+# define TRACE_INSN_RETURN_ENABLED() 0
+# define TRACE_RUBY_PROBE_ENABLED() 0
+
+# define FIRE_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline)
+# define FIRE_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline)
+# define FIRE_RAISE(exception, classname, sourcename, sourceline)
+# define FIRE_RESCUE(exception, sourcename, sourceline)
+# define FIRE_LINE(sourcename, sourceline)
+# define FIRE_GC_BEGIN()
+# define FIRE_GC_END()
+# define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline)
+# define FIRE_OBJECT_FREE(obj)
+# define FIRE_INSN_ENTRY(insnname, operands, sourcename, sourceline)
+# define FIRE_INSN_RETURN(insnname, operands, sourcename, sourceline)
+# define FIRE_RUBY_PROBE(name, data)
+
+#elif RUBY_TRACING_MODEL == RUBY_TRACING_MODEL_DTRACE
+# include "trace_dtrace.h"
+# define TRACE_METHOD_ENTRY_ENABLED()  RUBY_METHOD_ENTRY_ENABLED()
+# define TRACE_METHOD_RETURN_ENABLED() RUBY_METHOD_RETURN_ENABLED()
+# define TRACE_RAISE_ENABLED()         RUBY_RAISE_ENABLED()
+# define TRACE_RESCUE_ENABLED()        RUBY_RESCUE_ENABLED()
+# define TRACE_LINE_ENABLED()          RUBY_LINE_ENABLED()
+# define TRACE_GC_BEGIN_ENABLED()      RUBY_GC_BEGIN_ENABLED()
+# define TRACE_GC_END_ENABLED()        RUBY_GC_END_ENABLED()
+# define TRACE_OBJECT_CREATE_ENABLED() RUBY_OBJECT_CREATE_ENABLED()
+# define TRACE_OBJECT_FREE_ENABLED()   RUBY_OBJECT_FREE_ENABLED()
+# define TRACE_INSN_ENTRY_ENABLED()    RUBY_INSN_ENTRY_ENABLED()
+# define TRACE_INSN_RETURN_ENABLED()   RUBY_INSN_RETURN_ENABLED()
+# define TRACE_RUBY_PROBE_ENABLED()    RUBY_RUBY_PROBE_ENABLED()
+
+# define FIRE_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline) \
+   RUBY_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline)
+# define FIRE_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline) \
+   RUBY_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline)
+# define FIRE_RAISE(exception, classname, sourcename, sourceline) \
+   RUBY_RAISE(exception, classname, sourcename, sourceline)
+# define FIRE_RESCUE(exception, sourcename, sourceline) \
+   RUBY_RESCUE(exception, sourcename, sourceline)
+# define FIRE_LINE(sourcename, sourceline) \
+   RUBY_LINE(sourcename, sourceline)
+# define FIRE_GC_BEGIN() \
+   RUBY_GC_BEGIN()
+# define FIRE_GC_END() \
+   RUBY_GC_END()
+# define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline) \
+   RUBY_OBJECT_CREATE(obj, (char*)classname, (char*)sourcefile, sourceline)
+# define FIRE_OBJECT_FREE(obj) \
+   RUBY_OBJECT_FREE(obj)
+# define FIRE_INSN_ENTRY(insnname, operands, sourcename, sourceline) \
+   RUBY_INSN_ENTRY(insnname, operands, sourcename, sourceline)
+# define FIRE_INSN_RETURN(insnname, operands, sourcename, sourceline) \
+   RUBY_INSN_RETURN(insnname, operands, sourcename, sourceline)
+# define FIRE_RUBY_PROBE(name, data) \
+   RUBY_RUBY_PROBE(name, data)
+#endif
+
+#define FIRE_RAISE_FATAL() FIRE_RAISE(0, (char*)"fatal", (char*)"<unknown>", 0)
+
+#endif

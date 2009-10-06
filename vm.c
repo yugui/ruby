@@ -16,6 +16,7 @@
 #include "vm_core.h"
 #include "iseq.h"
 #include "eval_intern.h"
+#include "trace.h"
 
 #include "vm_insnhelper.h"
 #include "vm_insnhelper.c"
@@ -2072,6 +2073,7 @@ Init_BareVM(void)
     rb_thread_t * th = malloc(sizeof(*th));
     if (!vm || !th) {
 	fprintf(stderr, "[FATAL] failed to allocate memory\n");
+        if (TRACE_RAISE_ENABLED()) FIRE_RAISE_FATAL();
 	exit(EXIT_FAILURE);
     }
     MEMZERO(th, rb_thread_t, 1);
