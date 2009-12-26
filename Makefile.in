@@ -191,6 +191,9 @@ $(srcdir)/configure: $(srcdir)/configure.in
 
 incs: id.h
 
+$(arch_hdrdir)/ruby/trace_dtrace.h: $(srcdir)/defs/dtrace.d
+	$(DTRACE) -h -o $@ -s $<
+
 # Things which should be considered:
 # * with gperf v.s. without gperf
 # * committers may have various versions of gperf

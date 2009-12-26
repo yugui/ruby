@@ -8,8 +8,7 @@
  * Copyright 2007 Joyent Inc.
  * Copyright 2009 Yuki Sonoda (Yugui).
  */
-#include "ruby.h"
-#include "trace.h"
+#include "ruby/ruby.h"
 
 VALUE rb_mTracer;
 

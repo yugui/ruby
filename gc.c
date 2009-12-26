@@ -447,7 +447,6 @@ ruby_memerror_body(void *dummy)
     return 0;
 }
 
-#include "trace.h"
 static void
 ruby_memerror(void)
 {

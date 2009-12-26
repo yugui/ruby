@@ -16,7 +16,6 @@
 #include "gc.h"
 #include "ruby/vm.h"
 #include "ruby/encoding.h"
-#include "trace.h"
 
 #define numberof(array) (int)(sizeof(array) / sizeof((array)[0]))
 

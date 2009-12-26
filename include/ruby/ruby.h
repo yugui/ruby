@@ -522,7 +522,7 @@ double rb_num2dbl(VALUE);
 VALUE rb_uint2big(VALUE);
 VALUE rb_int2big(SIGNED_VALUE);
 
-#include "trace.h"
+#include "ruby/trace.h"
 
 VALUE rb_newobj(void);
 #define NEWOBJ(obj,type) type *obj = (type*)rb_newobj()

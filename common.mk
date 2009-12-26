@@ -681,8 +681,6 @@ newline.$(OBJEXT): {$(VPATH)}newline.c {$(VPATH)}defines.h \
   {$(VPATH)}transcode_data.h {$(VPATH)}ruby.h {$(VPATH)}config.h
 
 tracer.$(OBJEXT): $(RUBY_H_INCLUDES)
-trace_dtrace.h: $(srcdir)/defs/dtrace.d
-	$(DTRACE) -h -o $@ -s $(srcdir)/defs/dtrace.d
 # dummy target
 trace_none.h:
 

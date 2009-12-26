@@ -47,7 +47,7 @@
 # define FIRE_RUBY_PROBE(name, data)
 
 #elif RUBY_TRACING_MODEL == RUBY_TRACING_MODEL_DTRACE
-# include "trace_dtrace.h"
+# include "ruby/trace_dtrace.h"
 # define TRACE_METHOD_ENTRY_ENABLED()  RUBY_METHOD_ENTRY_ENABLED()
 # define TRACE_METHOD_RETURN_ENABLED() RUBY_METHOD_RETURN_ENABLED()
 # define TRACE_RAISE_ENABLED()         RUBY_RAISE_ENABLED()

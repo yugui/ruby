@@ -16,7 +16,6 @@
 #include "vm_core.h"
 #include "iseq.h"
 #include "eval_intern.h"
-#include "trace.h"
 
 #include "vm_insnhelper.h"
 #include "vm_insnhelper.c"
