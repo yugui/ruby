@@ -631,6 +631,9 @@ rb_rescue2(VALUE (* b_proc) (ANYARGS), VALUE data1,
 	    va_end(args);
 
 	    if (handle) {
+		if (UNLIKELY(TRACE_RESCUE_ENABLED())) {
+		    FIRE_RESCUE(th->errinfo, (char*)rb_class2name(CLASS_OF(th->errinfo)), (char*)"<unknown>", 0);
+		}
 		if (r_proc) {
 		    PUSH_TAG();
 		    if ((state = EXEC_TAG()) == 0) {

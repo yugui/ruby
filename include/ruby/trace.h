@@ -32,7 +32,7 @@
 # define FIRE_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline)
 # define FIRE_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline)
 # define FIRE_RAISE(exception, classname, sourcename, sourceline)
-# define FIRE_RESCUE(exception, sourcename, sourceline)
+# define FIRE_RESCUE(exception, classname, sourcename, sourceline)
 # define FIRE_LINE(sourcename, sourceline)
 # define FIRE_GC_BEGIN()
 # define FIRE_GC_END()
@@ -71,8 +71,8 @@
    RUBY_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline)
 # define FIRE_RAISE(exception, classname, sourcename, sourceline) \
    RUBY_RAISE(exception, classname, sourcename, sourceline)
-# define FIRE_RESCUE(exception, sourcename, sourceline) \
-   RUBY_RESCUE(exception, sourcename, sourceline)
+# define FIRE_RESCUE(exception, classname, sourcename, sourceline) \
+   RUBY_RESCUE(exception, classname, sourcename, sourceline)
 # define FIRE_LINE(sourcename, sourceline) \
    RUBY_LINE(sourcename, sourceline)
 # define FIRE_GC_BEGIN()     RUBY_GC_BEGIN()
