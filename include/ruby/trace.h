@@ -29,22 +29,22 @@
 # define TRACE_INSN_RETURN_ENABLED() 0
 # define TRACE_RUBY_PROBE_ENABLED() 0
 
-# define FIRE_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline)
-# define FIRE_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline)
-# define FIRE_RAISE(exception, classname, sourcename, sourceline)
-# define FIRE_RESCUE(exception, classname, sourcename, sourceline)
-# define FIRE_LINE(sourcename, sourceline)
-# define FIRE_GC_BEGIN()
-# define FIRE_GC_END()
-# define FIRE_THREAD_INIT(th, sourcefile, sourceline)
-# define FIRE_THREAD_TERM(th, sourcefile, sourceline)
-# define FIRE_THREAD_LEAVE(th, sourcefile, sourceline)
-# define FIRE_THREAD_ENTER(th, sourcefile, sourceline)
-# define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline)
-# define FIRE_OBJECT_FREE(obj)
-# define FIRE_INSN_ENTRY(insnname, operands, sourcename, sourceline)
-# define FIRE_INSN_RETURN(insnname, operands, sourcename, sourceline)
-# define FIRE_RUBY_PROBE(name, data)
+# define FIRE_METHOD_ENTRY(receiver, classname, methodname, sourcefile, sourceline) ((void)0)
+# define FIRE_METHOD_RETURN(receiver, classname, methodname, sourcefile, sourceline) ((void)0)
+# define FIRE_RAISE(exception, classname, sourcename, sourceline) ((void)0)
+# define FIRE_RESCUE(exception, classname, sourcename, sourceline) ((void)0)
+# define FIRE_LINE(sourcename, sourceline) ((void)0)
+# define FIRE_GC_BEGIN() ((void)0)
+# define FIRE_GC_END() ((void)0)
+# define FIRE_THREAD_INIT(th, sourcefile, sourceline) ((void)0)
+# define FIRE_THREAD_TERM(th, sourcefile, sourceline) ((void)0)
+# define FIRE_THREAD_LEAVE(th, sourcefile, sourceline) ((void)0)
+# define FIRE_THREAD_ENTER(th, sourcefile, sourceline) ((void)0)
+# define FIRE_OBJECT_CREATE(obj, classname, sourcefile, sourceline) ((void)0)
+# define FIRE_OBJECT_FREE(obj) ((void)0)
+# define FIRE_INSN_ENTRY(insnname, operands, sourcename, sourceline) ((void)0)
+# define FIRE_INSN_RETURN(insnname, operands, sourcename, sourceline) ((void)0)
+# define FIRE_RUBY_PROBE(name, data) ((void)0)
 
 #elif RUBY_TRACING_MODEL == RUBY_TRACING_MODEL_DTRACE
 # include "ruby/trace_dtrace.h"
