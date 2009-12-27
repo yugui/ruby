@@ -12,6 +12,13 @@
 
 VALUE rb_mTracer;
 
+#define FIRE_WITH_SUFFIXED_MSG(probe_name, probe_data, suffix) \
+    if (TRACE_RUBY_PROBE_ENABLED()) { \
+        char *msg = ALLOCA_N(char, strlen(probe_name) + strlen("-" #suffix) ); \
+        sprintf(msg, "%s%s", probe_name, "-" #suffix); \
+        FIRE_RUBY_PROBE(msg, (char*)probe_data); \
+    }
+
 static VALUE
 dtrace_fire(int argc, VALUE *argv, VALUE klass)
 {
@@ -25,23 +32,9 @@ dtrace_fire(int argc, VALUE *argv, VALUE klass)
     probe_name = StringValuePtr(name);
 
     if (rb_block_given_p()) {
-	char *start_probe = xmalloc(strlen(probe_name) + 7);
-	char *end_probe   = xmalloc(strlen(probe_name) + 5);
-
-	sprintf(start_probe, "%s-start", probe_name);
-	sprintf(end_probe, "%s-end", probe_name);
-
-	/* Build -start and -end strings for probe names */
-	if (TRACE_RUBY_PROBE_ENABLED())
-	    FIRE_RUBY_PROBE(start_probe, (char*)probe_data);
-
+        FIRE_WITH_SUFFIXED_MSG(probe_name, probe_data, start);
 	ret = rb_yield(Qnil);
-
-	if (TRACE_RUBY_PROBE_ENABLED())
-	    FIRE_RUBY_PROBE(end_probe, (char*)probe_data);
-
-	xfree(start_probe);
-	xfree(end_probe);
+        FIRE_WITH_SUFFIXED_MSG(probe_name, probe_data, end);
     } else {
 	if (TRACE_RUBY_PROBE_ENABLED())
 	    FIRE_RUBY_PROBE(probe_name, (char*)probe_data);
