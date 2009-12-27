@@ -681,8 +681,8 @@ newline.$(OBJEXT): {$(VPATH)}newline.c {$(VPATH)}defines.h \
   {$(VPATH)}transcode_data.h {$(VPATH)}ruby.h {$(VPATH)}config.h
 
 tracer.$(OBJEXT): $(RUBY_H_INCLUDES)
-# dummy target
 trace_none.h:
+	echo > $@
 
 INSNS2VMOPT = --srcdir="$(srcdir)"
 
