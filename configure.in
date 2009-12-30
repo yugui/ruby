@@ -2069,7 +2069,7 @@ case "$target_os" in
 esac
 
 AC_ARG_WITH(tracing-model,
-            AS_HELP_STRING([--with-tracing-model=MODEL], [use MODEL for tracing ruby's internal. [[auto]] (none|weakref|dtrace|auto)]),
+            AS_HELP_STRING([--with-tracing-model=MODEL], [use MODEL for tracing ruby's internal. [[auto]] (none|dtrace|auto)]),
             [TRACING_MODEL=$withval], [TRACING_MODEL=auto])
 
 if test "${TRACING_MODEL}" = "auto"; then
@@ -2081,15 +2081,10 @@ if test "${TRACING_MODEL}" = "auto"; then
 fi
 
 AC_DEFINE(RUBY_TRACING_MODEL_NONE, 0)
-AC_DEFINE(RUBY_TRACING_MODEL_WEAKREF, 1)
-AC_DEFINE(RUBY_TRACING_MODEL_DTRACE, 2)
+AC_DEFINE(RUBY_TRACING_MODEL_DTRACE, 1)
 case "${TRACING_MODEL}" in
     when(none)
-        AC_DEFINE(RUBY_TRACING_MODEL, 0, [none])
-        ;;
-    when(weakref)
-        AC_DEFINE(RUBY_TRACING_MODEL, 1, [weakref])
-	AC_MSG_ERROR([TODO])
+        AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_NONE, [none])
         ;;
     when(dtrace)
         if test -z "$DTRACE"; then
@@ -2097,7 +2092,7 @@ case "${TRACING_MODEL}" in
 	elif test -z "$ac_cv_header_sys_sdt_h"; then
             AC_MSG_ERROR([sys/dtrace.h is missing])
         else
-            AC_DEFINE(RUBY_TRACING_MODEL, 2, [dtrace])
+            AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_DTRACE, [dtrace])
         fi
         ;;
     when(*)
