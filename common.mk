@@ -83,7 +83,6 @@ COMMONOBJS    = array.$(OBJEXT) \
 		vm_dump.$(OBJEXT) \
 		thread.$(OBJEXT) \
 		cont.$(OBJEXT) \
-		tracer.$(OBJEXT) \
 		$(BUILTIN_ENCOBJS) \
 		$(BUILTIN_TRANSOBJS) \
 		$(MISSING)
@@ -680,7 +679,6 @@ newline.$(OBJEXT): {$(VPATH)}newline.c {$(VPATH)}defines.h \
   {$(VPATH)}intern.h {$(VPATH)}missing.h {$(VPATH)}st.h \
   {$(VPATH)}transcode_data.h {$(VPATH)}ruby.h {$(VPATH)}config.h
 
-tracer.$(OBJEXT): $(RUBY_H_INCLUDES)
 trace_none.h:
 	echo > $@
 

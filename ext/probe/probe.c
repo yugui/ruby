@@ -1,5 +1,5 @@
 /**
- * dtrace.c - 
+ * probe.c - 
  *
  * $Author$
  *
@@ -10,8 +10,6 @@
  */
 #include "ruby/ruby.h"
 
-VALUE rb_mTracer;
-
 #define FIRE_WITH_SUFFIXED_MSG(probe_name, probe_data, suffix) \
     if (TRACE_RUBY_PROBE_ENABLED()) { \
         char *msg = ALLOCA_N(char, strlen(probe_name) + strlen("-" #suffix) ); \
@@ -20,7 +18,7 @@ VALUE rb_mTracer;
     }
 
 static VALUE
-dtrace_fire(int argc, VALUE *argv, VALUE klass)
+probe_fire(int argc, VALUE *argv, VALUE klass)
 {
     int args;
     VALUE name, data, ret;
@@ -43,8 +41,7 @@ dtrace_fire(int argc, VALUE *argv, VALUE klass)
     return ret;
 }
 
-void Init_Tracer()
+void Init_Probe()
 {
-    rb_mTracer = rb_define_module("Tracer");
-    rb_define_module_function(rb_mTracer, "fire", dtrace_fire, -1);
+    rb_define_global_function("fire_probe", probe_fire, -1);
 }
