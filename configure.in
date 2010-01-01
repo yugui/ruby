@@ -361,20 +361,21 @@ AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
 [AC_CACHE_CHECK(whether dtrace needs post processing, rb_cv_prog_dtrace_g,
 [
  echo "int main(void){ return 0; }" > conftest.c
- echo "provider conftest{}" > conftest.d
+ echo "provider conftest{};" > conftest_provider.d
  $CC $CFLAGS -c -o conftest.o conftest.c
- if dtrace -G conftest.d conftest.o 2>/dev/null; then
+ if dtrace -G -s conftest_provider.d conftest.o 2>/dev/null; then
    rb_cv_prog_dtrace_g=yes
  else
    rb_cv_prog_dtrace_g=no
  fi
+ rm -f conftest.o conftest.c conftest_provider.d conftest_provider.o
 ])
 DTRACE_POSTPROCESS=$rb_cv_prog_dtrace_g
 AC_SUBST(DTRACE_POSTPROCESS)])
 
 AC_CHECK_TOOL(DTRACE, dtrace)
 if test x"$DTRACE" != x; then
-	DTRACE_POSTPROCESS
+	RUBY_DTRACE_POSTPROCESS
 fi
 
 AC_CHECK_TOOL(DOT, dot)
