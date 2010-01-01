@@ -358,7 +358,7 @@ MAKEDIRS="$MKDIR_P"
 AC_SUBST(MAKEDIRS)
 
 AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
-[AC_CACHE_CHECK(whether dtrace needs post processing, rb_cv_prog_dtrace_g,
+[AC_CACHE_CHECK(whether $DTRACE needs post processing, rb_cv_prog_dtrace_g,
 [
  echo "int main(void){ return 0; }" > conftest.c
  echo "provider conftest{};" > conftest_provider.d
@@ -366,21 +366,25 @@ AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
  if dtrace -G -s conftest_provider.d conftest.o 2>/dev/null; then
    rb_cv_prog_dtrace_g=yes
    DTRACE_OBJ='dtrace.$(OBJEXT)'
+   MINIDTRACE_OBJ='minidtrace.$(OBJEXT)'
+   GOLFDTRACE_OBJ='golfdtrace.$(OBJEXT)'
+   LIBRUBY_DTRACE_OBJ='libruby_dtrace.$(OBJEXT)'
  else
    rb_cv_prog_dtrace_g=no
    DTRACE_OBJ=''
+   MINIDTRACE_OBJ=''
+   GOLFDTRACE_OBJ=''
+   LIBRUBY_DTRACE_OBJ=''
  fi
  rm -f conftest.o conftest.c conftest_provider.d conftest_provider.o
 ])
+AC_SUBST(DTRACE_OBJ)
+AC_SUBST(MINIDTRACE_OBJ)
+AC_SUBST(GOLFDTRACE_OBJ)
+AC_SUBST(LIBRUBY_DTRACE_OBJ)
 ])
 
 AC_CHECK_TOOL(DTRACE, dtrace)
-if test x"$DTRACE" != x; then
-    RUBY_DTRACE_POSTPROCESS
-else
-    DTRACE_OBJ=''
-fi
-AC_SUBST(DTRACE_OBJ)
 
 AC_CHECK_TOOL(DOT, dot)
 AC_CHECK_TOOL(DOXYGEN, doxygen)
@@ -2117,12 +2121,14 @@ case "${TRACING_MODEL}" in
         else
             AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_DTRACE, [dtrace])
         fi
+	RUBY_DTRACE_POSTPROCESS
         ;;
     when(*)
         AC_MSG_ERROR([unknown tracing model: ${TRACING_MODEL}])
         ;;
 esac
 AC_SUBST(TRACING_MODEL)
+AC_SUBST(DTRACE_OBJ)
 
 AC_ARG_WITH(soname,
 	AS_HELP_STRING([--with-soname=SONAME], [base name of shared library]),
@@ -2771,4 +2777,5 @@ AC_CONFIG_FILES(Makefile, [{
 [EXEEXT=$EXEEXT gnumake=$gnumake])
 AC_OUTPUT
 dnl }
+
 dnl }
