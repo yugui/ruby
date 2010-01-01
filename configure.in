@@ -357,7 +357,25 @@ fi
 MAKEDIRS="$MKDIR_P"
 AC_SUBST(MAKEDIRS)
 
+AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
+[AC_CACHE_CHECK(whether dtrace needs post processing, rb_cv_prog_dtrace_g,
+[
+ echo "int main(void){ return 0; }" > conftest.c
+ echo "provider conftest{}" > conftest.d
+ $CC $CFLAGS -c -o conftest.o conftest.c
+ if dtrace -G conftest.d conftest.o 2>/dev/null; then
+   rb_cv_prog_dtrace_g=yes
+ else
+   rb_cv_prog_dtrace_g=no
+ fi
+])
+DTRACE_POSTPROCESS=$rb_cv_prog_dtrace_g
+AC_SUBST(DTRACE_POSTPROCESS)])
+
 AC_CHECK_TOOL(DTRACE, dtrace)
+if test x"$DTRACE" != x; then
+	DTRACE_POSTPROCESS
+fi
 
 AC_CHECK_TOOL(DOT, dot)
 AC_CHECK_TOOL(DOXYGEN, doxygen)
