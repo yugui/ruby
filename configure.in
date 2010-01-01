@@ -365,18 +365,22 @@ AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
  $CC $CFLAGS -c -o conftest.o conftest.c
  if dtrace -G -s conftest_provider.d conftest.o 2>/dev/null; then
    rb_cv_prog_dtrace_g=yes
+   DTRACE_OBJ='dtrace.$(OBJEXT)'
  else
    rb_cv_prog_dtrace_g=no
+   DTRACE_OBJ=''
  fi
  rm -f conftest.o conftest.c conftest_provider.d conftest_provider.o
 ])
-DTRACE_POSTPROCESS=$rb_cv_prog_dtrace_g
-AC_SUBST(DTRACE_POSTPROCESS)])
+])
 
 AC_CHECK_TOOL(DTRACE, dtrace)
 if test x"$DTRACE" != x; then
-	RUBY_DTRACE_POSTPROCESS
+    RUBY_DTRACE_POSTPROCESS
+else
+    DTRACE_OBJ=''
 fi
+AC_SUBST(DTRACE_OBJ)
 
 AC_CHECK_TOOL(DOT, dot)
 AC_CHECK_TOOL(DOXYGEN, doxygen)

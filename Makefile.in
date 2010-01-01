@@ -66,6 +66,10 @@ ARCHMINIOBJS = @MINIOBJS@
 BUILTIN_ENCOBJS = @BUILTIN_ENCOBJS@
 BUILTIN_TRANSSRCS = @BUILTIN_TRANSSRCS@
 BUILTIN_TRANSOBJS = @BUILTIN_TRANSOBJS@
+DTRACE_OBJ      = @DTRACE_OBJ@
+MINIDTRACE_OBJ  = mini@DTRACE_OBJ@
+GOLFDTRACE_OBJ  = golf@DTRACE_OBJ@
+LIBRUBY_DTRACE_OBJ  = libruby_@DTRACE_OBJ@
 
 RUBY_BASE_NAME=@RUBY_BASE_NAME@
 RUBY_INSTALL_NAME=@RUBY_INSTALL_NAME@
@@ -142,27 +146,36 @@ all:
 
 miniruby$(EXEEXT):
 		@-if test -f $@; then $(MV) -f $@ $@.old; $(RM) $@.old; fi
-		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(LIBS) $(OUTFLAG)$@
+		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(MINIDTRACE_OBJ) $(LIBS) $(OUTFLAG)$@
+$(MINIDTRACE_OBJ): $(srcdir)/defs/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
 
 $(PROGRAM):
 		@$(RM) $@
-		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(EXTOBJS) $(LIBRUBYARG) $(LIBS) $(OUTFLAG)$@
+		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(EXTOBJS) $(DTRACE_OBJ) $(LIBRUBYARG) $(LIBS) $(OUTFLAG)$@
+$(DTRACE_OBJ): $(srcdir)/defs/dtrace.d $(MAINOBJ) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(MAINOBJ) $(EXTOBJS)
+$(GOLFDTRACE_OBJ): $(srcdir)/defs/dtrace.d $(GOLFOBJS) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(GOLFOBJS) $(EXTOBJS)
 
 # We must `rm' the library each time this rule is invoked because "updating" a
 # MAB library on Apple/NeXT (see --enable-fat-binary in configure) is not
 # supported.
 $(LIBRUBY_A):
 		@$(RM) $@
-		$(AR) $(ARFLAGS) $@ $(OBJS) $(DMYEXT)
+		$(AR) $(ARFLAGS) $@ $(OBJS) $(DMYEXT) $(LIBRUBY_DTRACE_OBJ)
 		@-$(RANLIB) $@ 2> /dev/null || true
 
 $(LIBRUBY_SO):
 		@-$(PRE_LIBRUBY_UPDATE)
-		$(LDSHARED) $(DLDFLAGS) $(OBJS) $(DLDOBJS) $(TRACEOBJ) $(SOLIBS) $(OUTFLAG)$@
+		$(LDSHARED) $(DLDFLAGS) $(OBJS) $(DLDOBJS) $(LIBRUBY_DTRACE_OBJ) $(SOLIBS) $(OUTFLAG)$@
 		-$(OBJCOPY) -w -L '@EXPORT_PREFIX@Init_*' -L '@EXPORT_PREFIX@*_threadptr_*' $@
 		@-$(MINIRUBY) -e 'ARGV.each{|link| File.delete link if File.exist? link; \
 						  File.symlink "$(LIBRUBY_SO)", link}' \
 				$(LIBRUBY_ALIASES) || true
+
+$(LIBRUBY_DTRACE_OBJ): $(srcdir)/defs/dtrace.d $(OBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(OBJS) $(DMYEXT)
 
 fake: $(arch)-fake.rb
 $(arch)-fake.rb: config.status
