@@ -1067,7 +1067,7 @@ AC_CHECK_HEADERS(limits.h sys/file.h sys/ioctl.h sys/syscall.h\
 		 syscall.h pwd.h grp.h a.out.h utime.h direct.h sys/resource.h \
 		 sys/mkdev.h sys/utime.h xti.h netinet/in_systm.h float.h ieeefp.h \
 		 ucontext.h intrinsics.h langinfo.h locale.h sys/sendfile.h time.h \
-		 net/socket.h sys/socket.h sys/sdt.h)
+		 net/socket.h sys/socket.h)
 
 
 dnl Check additional types.
