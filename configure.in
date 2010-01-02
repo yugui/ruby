@@ -2120,6 +2120,8 @@ if test "${TRACING_MODEL}" = "auto"; then
         RUBY_DTRACE_POSTPROCESS()
         if test "$rb_cv_prog_dtrace_g" = 'yes'; then 
             RUBY_DTRACE_BSD_BROKEN([TRACING_MODEL=none], [TRACING_MODEL=dtrace]) 
+        else
+            TRACING_MODEL=dtrace
         fi
     else
         TRACING_MODEL=none
