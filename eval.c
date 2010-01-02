@@ -416,6 +416,12 @@ rb_longjmp(int tag, volatile VALUE mesg)
 	}
     }
 
+    if (rb_threadptr_set_raised(th)) {
+	th->errinfo = exception_error;
+	rb_threadptr_reset_raised(th);
+	JUMP_TAG(TAG_FATAL);
+    }
+
     rb_trap_restore_mask();
 
     if (tag == TAG_FATAL) {
