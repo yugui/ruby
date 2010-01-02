@@ -389,15 +389,14 @@ EOF
     echo "provider conftest{ probe fire(); };" > conftest_provider.d
     $DTRACE -h -o conftest_provider.h -s conftest_provider.d
     $CC $CFLAGS -c -o conftest.o conftest.c
-    $DTRACE -G -o conftest_provider.o -s conftest_provider.d conftest.o
-    if $CC $LDFLAGS $XLDFLAGS conftest.o conftest_provider.o -oconftest 2>/dev/null; then
+    if $DTRACE -G -o conftest_provider.o -s conftest_provider.d conftest.o >/dev/null 2>/dev/null; then
         rb_cv_dtrace_bsd_broken=no
         $2
     else
         rb_cv_dtrace_bsd_broken=yes
         $1
     fi
-    rm -f conftest.[co] conftest_provider.[dho] conftest
+    rm -f conftest.[co] conftest_provider.[dho]
 ])
 ])
 
@@ -2140,7 +2139,7 @@ case "${TRACING_MODEL}" in
             RUBY_DTRACE_POSTPROCESS()
             if test "$rb_cv_prog_dtrace_g" = 'yes'; then 
                 RUBY_DTRACE_BSD_BROKEN(
-                [AC_MSG_ERROR("--with-tracing-model=dtrace, however, USDT is broken")],
+                [AC_MSG_ERROR([--with-tracing-model=dtrace, however, USDT is broken])],
                 [
                    DTRACE_OBJ='dtrace.$(OBJEXT)'
                    MINIDTRACE_OBJ='minidtrace.$(OBJEXT)'
