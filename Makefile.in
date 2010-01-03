@@ -148,16 +148,16 @@ all:
 miniruby$(EXEEXT):
 		@-if test -f $@; then $(MV) -f $@ $@.old; $(RM) $@.old; fi
 		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(MINIDTRACE_OBJ) $(LIBS) $(OUTFLAG)$@
-$(MINIDTRACE_OBJ): dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
-		$(DTRACE) -G -o $@ -s dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
+$(MINIDTRACE_OBJ): $(arch_hdrdir)/ruby/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
 
 $(PROGRAM):
 		@$(RM) $@
 		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(EXTOBJS) $(DTRACE_OBJ) $(LIBRUBYARG) $(LIBS) $(OUTFLAG)$@
-$(DTRACE_OBJ): dtrace.d $(MAINOBJ) $(EXTOBJS)
-		$(DTRACE) -G -o $@ -s dtrace.d $(MAINOBJ) $(EXTOBJS)
-$(GOLFDTRACE_OBJ): dtrace.d $(GOLFOBJS) $(EXTOBJS)
-		$(DTRACE) -G -o $@ -s dtrace.d $(GOLFOBJS) $(EXTOBJS)
+$(DTRACE_OBJ): $(arch_hdrdir)/ruby/dtrace.d $(MAINOBJ) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/dtrace.d $(MAINOBJ) $(EXTOBJS)
+$(GOLFDTRACE_OBJ): $(arch_hdrdir)/ruby/dtrace.d $(GOLFOBJS) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/dtrace.d $(GOLFOBJS) $(EXTOBJS)
 
 # We must `rm' the library each time this rule is invoked because "updating" a
 # MAB library on Apple/NeXT (see --enable-fat-binary in configure) is not
@@ -175,8 +175,8 @@ $(LIBRUBY_SO):
 						  File.symlink "$(LIBRUBY_SO)", link}' \
 				$(LIBRUBY_ALIASES) || true
 
-$(LIBRUBY_DTRACE_OBJ): dtrace.d $(OBJS) $(DMYEXT)
-		$(DTRACE) -G -o $@ -s dtrace.d $(OBJS) $(DMYEXT)
+$(LIBRUBY_DTRACE_OBJ): $(arch_hdrdir)/ruby/dtrace.d $(OBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/dtrace.d $(OBJS) $(DMYEXT)
 
 fake: $(arch)-fake.rb
 $(arch)-fake.rb: config.status
@@ -205,11 +205,11 @@ $(srcdir)/configure: $(srcdir)/configure.in
 
 incs: id.h
 
-$(arch_hdrdir)/ruby/trace_dtrace.h: dtrace.d
-	$(DTRACE) -h -o $@ -s dtrace.d
+$(arch_hdrdir)/ruby/trace_dtrace.h: $(arch_hdrdir)/ruby/dtrace.d
+	$(DTRACE) -h -o $@ -s $(arch_hdrdir)/ruby/dtrace.d
 
 # NOTE: dtrace is not used on cross compiling
-dtrace.d: $(srcdir)/defs/dtrace.d
+$(arch_hdrdir)/ruby/dtrace.d: $(srcdir)/defs/dtrace.d
 	@echo '#include <limits.h>' > conftest.c
 	@echo '#define RUBY_TRACE_H' >> conftest.c
 	@echo '#include "ruby/ruby.h"' >> conftest.c

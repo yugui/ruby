@@ -385,7 +385,7 @@ distclean: distclean-ext distclean-local distclean-enc distclean-golf distclean-
 distclean-local:: clean-local
 	@$(RM) $(MKFILES) rbconfig.rb yasmdata.rb encdb.h
 	@$(RM) config.cache config.log config.status config.status.lineno $(PRELUDES)
-	@$(RM) dtrace.d
+	@$(RM) $(arch_hdrdir)/ruby/dtrace.d
 	@$(RM) *~ *.bak *.stackdump core *.core gmon.out $(PREP)
 distclean-ext:: PHONY
 distclean-golf: clean-golf
