@@ -214,11 +214,12 @@ dtrace.d: $(srcdir)/defs/dtrace.d
 	@echo '#define RUBY_TRACE_H' >> conftest.c
 	@echo '#include "ruby/ruby.h"' >> conftest.c
 	@echo 'int main(){ printf("%d", SIZEOF_VALUE * CHAR_BIT); return 0; }' >> conftest.c
-	@$(CC) $(CFLAGS) $(XCFLAGS) $(CPPFLAGS) $(COUTFLAG)conftest conftest.c 
+	@$(CC) $(CFLAGS) $(XCFLAGS) $(CPPFLAGS) -c $(COUTFLAG)conftest.o conftest.c 
+	$(CC) $(LDFLAGS) $(XLDFLAGS) conftest.o $(LIBS) $(OUTFLAG)conftest
 	@$(CP) $(srcdir)/defs/dtrace.d dtrace.c
 	$(CPP) $(CPPFLAGS) -DBITSIZE_OF_VALUE=`./conftest` dtrace.c $(CPPOUTFILE)
 	$(MV) conftest.i $@
-	@$(RM) conftest conftest.c dtrace.c
+	@$(RM) conftest conftest.[co] dtrace.c
 
 # Things which should be considered:
 # * with gperf v.s. without gperf
