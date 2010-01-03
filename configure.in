@@ -2116,7 +2116,7 @@ AC_ARG_WITH(tracing-model,
             [TRACING_MODEL=$withval], [TRACING_MODEL=auto])
 
 if test "${TRACING_MODEL}" = "auto"; then
-    if test ! -z "$DTRACE"; then
+    if test x"$DTRACE" != x -a x"$cross_compiling" != xyes; then
         RUBY_DTRACE_POSTPROCESS()
         if test "$rb_cv_prog_dtrace_g" = 'yes'; then 
             RUBY_DTRACE_BSD_BROKEN([TRACING_MODEL=none], [TRACING_MODEL=dtrace]) 
@@ -2135,6 +2135,8 @@ case "${TRACING_MODEL}" in
     when(dtrace)
         if test -z "$DTRACE"; then
             AC_MSG_ERROR([dtrace(1) is missing])
+        elif test "$cross_compiling" = yes; then
+            AC_MSG_ERROR([--with-tracing-model=dtrace, however, cross compiling])
         else
             RUBY_DTRACE_POSTPROCESS()
             if test "$rb_cv_prog_dtrace_g" = 'yes'; then 
