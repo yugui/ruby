@@ -52,6 +52,7 @@ debugflags = @debugflags@
 warnflags = @warnflags@
 XCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir) -I$(srcdir) @XCFLAGS@
 CPPFLAGS = @CPPFLAGS@
+CPPOUTFILE = @CPPOUTFILE@
 LDFLAGS = @STATIC@ $(CFLAGS) @LDFLAGS@
 EXTLDFLAGS = 
 XLDFLAGS = @XLDFLAGS@ $(EXTLDFLAGS)
@@ -147,16 +148,16 @@ all:
 miniruby$(EXEEXT):
 		@-if test -f $@; then $(MV) -f $@ $@.old; $(RM) $@.old; fi
 		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(MINIDTRACE_OBJ) $(LIBS) $(OUTFLAG)$@
-$(MINIDTRACE_OBJ): $(srcdir)/defs/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
-		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
+$(MINIDTRACE_OBJ): dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s dtrace.d $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT)
 
 $(PROGRAM):
 		@$(RM) $@
 		$(PURIFY) $(CC) $(LDFLAGS) $(XLDFLAGS) $(MAINLIBS) $(MAINOBJ) $(EXTOBJS) $(DTRACE_OBJ) $(LIBRUBYARG) $(LIBS) $(OUTFLAG)$@
-$(DTRACE_OBJ): $(srcdir)/defs/dtrace.d $(MAINOBJ) $(EXTOBJS)
-		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(MAINOBJ) $(EXTOBJS)
-$(GOLFDTRACE_OBJ): $(srcdir)/defs/dtrace.d $(GOLFOBJS) $(EXTOBJS)
-		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(GOLFOBJS) $(EXTOBJS)
+$(DTRACE_OBJ): dtrace.d $(MAINOBJ) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s dtrace.d $(MAINOBJ) $(EXTOBJS)
+$(GOLFDTRACE_OBJ): dtrace.d $(GOLFOBJS) $(EXTOBJS)
+		$(DTRACE) -G -o $@ -s dtrace.d $(GOLFOBJS) $(EXTOBJS)
 
 # We must `rm' the library each time this rule is invoked because "updating" a
 # MAB library on Apple/NeXT (see --enable-fat-binary in configure) is not
@@ -174,8 +175,8 @@ $(LIBRUBY_SO):
 						  File.symlink "$(LIBRUBY_SO)", link}' \
 				$(LIBRUBY_ALIASES) || true
 
-$(LIBRUBY_DTRACE_OBJ): $(srcdir)/defs/dtrace.d $(OBJS) $(DMYEXT)
-		$(DTRACE) -G -o $@ -s $(srcdir)/defs/dtrace.d $(OBJS) $(DMYEXT)
+$(LIBRUBY_DTRACE_OBJ): dtrace.d $(OBJS) $(DMYEXT)
+		$(DTRACE) -G -o $@ -s dtrace.d $(OBJS) $(DMYEXT)
 
 fake: $(arch)-fake.rb
 $(arch)-fake.rb: config.status
@@ -204,8 +205,20 @@ $(srcdir)/configure: $(srcdir)/configure.in
 
 incs: id.h
 
-$(arch_hdrdir)/ruby/trace_dtrace.h: $(srcdir)/defs/dtrace.d
-	$(DTRACE) -h -o $@ -s $<
+$(arch_hdrdir)/ruby/trace_dtrace.h: dtrace.d
+	$(DTRACE) -h -o $@ -s dtrace.d
+
+# NOTE: dtrace is not used on cross compiling
+dtrace.d: $(srcdir)/defs/dtrace.d
+	@echo '#include <limits.h>' > conftest.c
+	@echo '#define RUBY_TRACE_H' >> conftest.c
+	@echo '#include "ruby/ruby.h"' >> conftest.c
+	@echo 'int main(){ printf("%d", SIZEOF_VALUE * CHAR_BIT); return 0; }' >> conftest.c
+	@$(CC) $(CFLAGS) $(XCFLAGS) $(CPPFLAGS) $(COUTFLAG)conftest conftest.c 
+	@$(CP) $(srcdir)/defs/dtrace.d dtrace.c
+	$(CPP) $(CPPFLAGS) -DBITSIZE_OF_VALUE=`./conftest` dtrace.c $(CPPOUTFILE)
+	$(MV) conftest.i $@
+	@$(RM) conftest conftest.c dtrace.c
 
 # Things which should be considered:
 # * with gperf v.s. without gperf

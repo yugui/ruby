@@ -1,4 +1,10 @@
-typedef uint32_t VALUE;
+#ifdef BITSIZE_OF_VALUE
+#define DO_DEFINE_VALUE(sz) typedef uint ## sz ## _t VALUE
+#define DEFINE_VALUE(sz) DO_DEFINE_VALUE(sz)
+DEFINE_VALUE(BITSIZE_OF_VALUE);
+#else
+# error BITSIZE_OF_VALUE is not defined.
+#endif
 provider ruby {
     probe method__entry(VALUE receiver, char *classname, char *methodname, char *sourcefile, int sourceline);
     probe method__return(VALUE receiver, char *classname, char *methodname, char *sourcefile, int sourceline);
