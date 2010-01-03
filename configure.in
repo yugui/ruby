@@ -2140,14 +2140,11 @@ case "${TRACING_MODEL}" in
         else
             RUBY_DTRACE_POSTPROCESS()
             if test "$rb_cv_prog_dtrace_g" = 'yes'; then 
-                RUBY_DTRACE_BSD_BROKEN(
-                [AC_MSG_ERROR([--with-tracing-model=dtrace, however, USDT is broken])],
-                [
-                   DTRACE_OBJ='dtrace.$(OBJEXT)'
-                   MINIDTRACE_OBJ='minidtrace.$(OBJEXT)'
-                   GOLFDTRACE_OBJ='golfdtrace.$(OBJEXT)'
-                   LIBRUBY_DTRACE_OBJ='libruby_dtrace.$(OBJEXT)'
-                ])
+                RUBY_DTRACE_BSD_BROKEN([AC_MSG_ERROR([--with-tracing-model=dtrace, however, USDT is broken])], [])
+                DTRACE_OBJ='dtrace.$(OBJEXT)'
+                MINIDTRACE_OBJ='minidtrace.$(OBJEXT)'
+                GOLFDTRACE_OBJ='golfdtrace.$(OBJEXT)'
+                LIBRUBY_DTRACE_OBJ='libruby_dtrace.$(OBJEXT)'
             fi
         fi
         AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_DTRACE, [dtrace])
