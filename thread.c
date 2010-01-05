@@ -376,6 +376,8 @@ thread_cleanup_func(void *th_ptr)
 {
     rb_thread_t *th = th_ptr;
 
+    EXEC_EVENT_HOOK(th, RUBY_EVENT_TH_TERM, th->self, 0, 0);
+
     /* unlock all locking mutexes */
     if (th->keeping_mutexes) {
 	rb_mutex_unlock_all(th->keeping_mutexes, th);
@@ -533,6 +535,7 @@ thread_create_core(VALUE thval, VALUE args, VALUE (*fn)(ANYARGS))
     native_mutex_initialize(&th->interrupt_lock);
     /* kick thread */
     st_insert(th->vm->living_threads, thval, (st_data_t) th->thread_id);
+    EXEC_EVENT_HOOK(GET_THREAD(), RUBY_EVENT_TH_INIT, thval, 0, 0);
     err = native_thread_create(th);
     if (err) {
 	st_delete_wrap(th->vm->living_threads, th->self);

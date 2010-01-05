@@ -1059,16 +1059,16 @@ rb_during_gc(void)
 VALUE
 rb_newobj(void)
 {
-#if USE_VALUE_CACHE || (defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE)
     rb_thread_t *th = GET_THREAD();
-#endif
-#if USE_VALUE_CACHE
-    VALUE v = *th->value_cache_ptr;
-#endif
 #if defined(ENABLE_VM_OBJSPACE) && ENABLE_VM_OBJSPACE
     rb_objspace_t *objspace = th->vm->objspace;
 #else
     rb_objspace_t *objspace = &rb_objspace;
+#endif
+#if USE_VALUE_CACHE
+    VALUE v = *th->value_cache_ptr;
+#else
+    VALUE v = rb_newobj_from_heap(objspace);
 #endif
 
     if (during_gc) {
@@ -1085,15 +1085,14 @@ rb_newobj(void)
     else {
 	v = rb_fill_value_cache(th);
     }
+#endif
 
 #if defined(GC_DEBUG)
     printf("cache index: %d, v: %p, th: %p\n",
 	   th->value_cache_ptr - th->value_cache, v, th);
 #endif
+    EXEC_EVENT_HOOK(th, RUBY_EVENT_OBJ_ALLOC, v, 0, 0);
     return v;
-#else
-    return rb_newobj_from_heap(objspace);
-#endif
 }
 
 NODE*
@@ -1973,6 +1972,8 @@ obj_free(rb_objspace_t *objspace, VALUE obj)
 	break;
     }
 
+    EXEC_EVENT_HOOK(GET_THREAD(), RUBY_EVENT_OBJ_FREE, obj, 0, 0);
+
     if (FL_TEST(obj, FL_EXIVAR)) {
 	rb_free_generic_ivar((VALUE)obj);
 	FL_UNSET(obj, FL_EXIVAR);
@@ -2153,6 +2154,7 @@ garbage_collect(rb_objspace_t *objspace)
     during_gc++;
     objspace->count++;
 
+    EXEC_EVENT_HOOK(th, RUBY_EVENT_GC_START, 0, 0, 0);
     GC_PROF_TIMER_START;
     GC_PROF_MARK_TIMER_START;
     SET_STACK_END;
@@ -2201,6 +2203,7 @@ garbage_collect(rb_objspace_t *objspace)
     GC_PROF_SWEEP_TIMER_STOP;
 
     GC_PROF_TIMER_STOP;
+    EXEC_EVENT_HOOK(th, RUBY_EVENT_GC_END, 0, 0, 0);
     if (GC_NOTIFY) printf("end garbage_collect()\n");
     return TRUE;
 }
