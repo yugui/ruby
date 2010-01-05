@@ -3683,6 +3683,7 @@ thread_reset_event_flags(rb_thread_t *th)
 	flag |= hook->flag;
 	hook = hook->next;
     }
+    th->event_flags = flag;
 }
 
 static void
