@@ -115,7 +115,7 @@ module Buffering
   # underlying IO is writable.
   #
   # So OpenSSL::Buffering#read_nonblock needs two rescue clause as follows.
-  # 
+  #
   #  # emulates blocking read (readpartial).
   #  begin
   #    result = ssl.read_nonblock(maxlen)
@@ -270,7 +270,7 @@ module Buffering
   # underlying IO is writable.
   #
   # So OpenSSL::Buffering#write_nonblock needs two rescue clause as follows.
-  # 
+  #
   #  # emulates blocking write.
   #  begin
   #    result = ssl.write_nonblock(str)

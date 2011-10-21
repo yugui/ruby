@@ -8,8 +8,8 @@ and put it into this directory.
  spec
   +-- mspec            driver library for executing the specification.
   +-- rubyspec
-       +-- core        specification for core libraries 
-       |    +-- array 
+       +-- core        specification for core libraries
+       |    +-- array
        |    +-- bignum
        |    +-- ...
        |

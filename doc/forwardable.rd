@@ -1,5 +1,5 @@
  -- forwardable.rb
-						
+
                                                 $Release Version: 1.1 $
                                                 $Revision$
 						Original version by Tosh
@@ -13,7 +13,7 @@ A Module to define delegations for selected methods to a class.
 == Usage
 
 Using through extending the class.
-  
+
   class Foo
     extend Forwardable
 
@@ -34,7 +34,7 @@ Using through extending the class.
       ((|accessor|)).
 
 --- Forwardable#def_instance_delegator(accessor, method, ali = method)
-      
+
       adding the delegation for ((|method|)) to ((|accessor|)). When
       you give optional argument ((|ali|)), ((|ali|)) is used as the
       name of the delegation method, instead of ((|method|)).
@@ -44,7 +44,7 @@ Using through extending the class.
       the alias of ((|Forwardable#def_instance_delegators|)).
 
 --- Forwardable#def_delegator(accessor, method, ali = method)
-      
+
       the alias of ((|Forwardable#def_instance_delegator|)).
 
 = SingleForwardable

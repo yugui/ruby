@@ -131,10 +131,10 @@ rsock_init_inetsock(VALUE sock, VALUE remote_host, VALUE remote_serv,
 
 /*
  * call-seq:
- *   ipsocket.addr => [address_family, port, hostname, numeric_address] 
+ *   ipsocket.addr => [address_family, port, hostname, numeric_address]
  *
  * Returns the local address as an array which contains
- * address_family, port, hostname and numeric_address. 
+ * address_family, port, hostname and numeric_address.
  *
  * hostname is obtained from numeric_address using reverse lookup.
  * If ipsocket.do_not_reverse_lookup is true,
@@ -161,10 +161,10 @@ ip_addr(VALUE sock)
 
 /*
  * call-seq:
- *   ipsocket.peeraddr => [address_family, port, hostname, numeric_address] 
+ *   ipsocket.peeraddr => [address_family, port, hostname, numeric_address]
  *
  * Returns the remote address as an array which contains
- * address_family, port, hostname and numeric_address. 
+ * address_family, port, hostname and numeric_address.
  * It is defined for connection oritented socket such as TCPSocket.
  *
  *   TCPSocket.open("www.ruby-lang.org", 80) {|sock|
@@ -205,7 +205,7 @@ ip_peeraddr(VALUE sock)
  *   u2 = UDPSocket.new
  *   u2.send "uuuu", 0, "127.0.0.1", 4913
  *   p u1.recvfrom(10) #=> ["uuuu", ["AF_INET", 33230, "localhost", "127.0.0.1"]]
- *   
+ *
  */
 static VALUE
 ip_recvfrom(int argc, VALUE *argv, VALUE sock)

@@ -1,5 +1,5 @@
 
-The following text is the original 'COPYRIGHT' file of tkHTML. 
+The following text is the original 'COPYRIGHT' file of tkHTML.
 
 -----------------------------------------------------------------------
 Most of the source code for the Tk Html widget has been place in the
@@ -9,4 +9,4 @@ A copyright notice appears separately at the top of each source file.
 -----------------------------------------------------------------------
 
 In this sample, HTML documents are quoted in the 'tests' directory of
-tkHTML source tree. There were no copyright notice in the directory. 
+tkHTML source tree. There were no copyright notice in the directory.

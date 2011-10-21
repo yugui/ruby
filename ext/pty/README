@@ -2,7 +2,7 @@ pty extension version 0.3 by A.ito
 
 1. Introduction
 
-This extension module adds ruby a functionality to execute an 
+This extension module adds ruby a functionality to execute an
 arbitrary command through pseudo tty (pty).
 
 2. Install
@@ -25,9 +25,9 @@ following module fungtions:
    getpty(command)
    spawn(command)
 
-      This function reserves a pty, executes command over the pty 
+      This function reserves a pty, executes command over the pty
       and returns an array. The return value is an array with three
-      elements. The first element in the array is for reading and the 
+      elements. The first element in the array is for reading and the
       second for writing. The third element is the process ID of the
       child process. If this function is called with an iterator block,
       the array is passed to the block as block parameters, and the
@@ -47,8 +47,8 @@ following module fungtions:
 
 (C) Copyright 1998 by Akinori Ito.
 
-This software may be redistributed freely for this purpose, in full 
-or in part, provided that this entire copyright notice is included 
+This software may be redistributed freely for this purpose, in full
+or in part, provided that this entire copyright notice is included
 on any copies of this software and applications and derivations thereof.
 
 This software is provided on an "as is" basis, without warranty of any

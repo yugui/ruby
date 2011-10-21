@@ -86,7 +86,7 @@ class StrSet
             if byteset.length == 1 && byteset[0].begin == byteset[0].end
               "%02x" % byteset[0].begin
             else
-              "{" + 
+              "{" +
               byteset.map {|range|
                 if range.begin == range.end
                   "%02x" % range.begin
@@ -214,7 +214,7 @@ class ActionMap
   alias == eql?
 
   def inspect
-    "\#<#{self.class}:" + 
+    "\#<#{self.class}:" +
     @map.map {|k, v| " [" + k.to_s + "]=>" + v.inspect }.join('') +
     ">"
   end

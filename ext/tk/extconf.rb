@@ -5,7 +5,7 @@
 require 'mkmf'
 
 TkLib_Config = {}
-TkLib_Config['search_versions'] = 
+TkLib_Config['search_versions'] =
   %w[8.9 8.8 8.7 8.6 8.5 8.4 8.3 8.2 8.1 8.0 4.2]
 
 
@@ -24,7 +24,7 @@ end
 $cleanfiles << 'config_list'
 config_list_file = 'config_list'
 config_list_file_source = File.join(File.dirname(__FILE__),'config_list.in')
-if !File.exist?(config_list_file) || 
+if !File.exist?(config_list_file) ||
     File.ctime(config_list_file_source) > File.ctime(config_list_file)
   old_config_list_file = config_list_file_source
 else
@@ -90,7 +90,7 @@ if update_flag
 
 else
   makefile = 'Makefile'
-  if File.exist?(makefile) && 
+  if File.exist?(makefile) &&
       File.ctime(config_list_file) > File.ctime(makefile)
     # no need to update Makefile
     exit
@@ -192,7 +192,7 @@ def get_shlib_path_head
 
   else
     [
-      '/opt', '/pkg', '/share', 
+      '/opt', '/pkg', '/share',
       '/usr/local/opt', '/usr/local/pkg', '/usr/local/share', '/usr/local',
       '/usr/opt', '/usr/pkg', '/usr/share', '/usr/contrib', '/usr'
     ].each{|dir|
@@ -263,7 +263,7 @@ def find_macosx_framework
   end
 
   # framework is disabled?
-  if with_config("tcltk-framework") == false || 
+  if with_config("tcltk-framework") == false ||
       enable_config("tcltk-framework") == false
    return false
   end
@@ -271,7 +271,7 @@ def find_macosx_framework
   use_framework ||= (framework_dir = with_config("tcltk-framework"))
   if framework_dir.kind_of? String
     TkLib_Config["tcltk-framework"] = framework_dir.strip.chomp('/')
-    return [File.join(TkLib_Config["tcltk-framework"], 'Tcl.framework'), 
+    return [File.join(TkLib_Config["tcltk-framework"], 'Tcl.framework'),
             File.join(TkLib_Config["tcltk-framework"], 'Tk.framework')]
   end
 
@@ -282,7 +282,7 @@ def find_macosx_framework
   end
 
   paths = [
-    #"~/Library/Frameworks", 
+    #"~/Library/Frameworks",
     "/Library/Frameworks",
     "/Network/Library/Frameworks", "/System/Library/Frameworks"
   ]
@@ -299,7 +299,7 @@ end
 
 def collect_tcltk_defs(tcl_defs_str, tk_defs_str)
   conflicts = [
-    'PACKAGE_NAME', 'PACKAGE_TARNAME', 'PACKAGE_VERSION', 
+    'PACKAGE_NAME', 'PACKAGE_TARNAME', 'PACKAGE_VERSION',
     'PACKAGE_STRING', 'PACKAGE_BUGREPORT'
   ]
 
@@ -341,7 +341,7 @@ def collect_tcltk_defs(tcl_defs_str, tk_defs_str)
 
   defs.delete_if{|name,value|
     conflicts.include?(name) ||
-      ( (vtcl = tcl_defs.assoc(name)) && (vtk = tk_defs.assoc(name)) && 
+      ( (vtcl = tcl_defs.assoc(name)) && (vtk = tk_defs.assoc(name)) &&
           vtcl != vtk )
   }
 
@@ -379,24 +379,24 @@ def get_tclConfig_dirs
         dirs << TkLib_Config["ActiveTcl"]
       end
       dirs.concat [
-        "c:/ActiveTcl*/lib", "c:/Activetcl*/lib", 
-        "c:/activeTcl*/lib", "c:/activetcl*/lib", 
-        "c:/Tcl*/lib", "c:/tcl*/lib", 
+        "c:/ActiveTcl*/lib", "c:/Activetcl*/lib",
+        "c:/activeTcl*/lib", "c:/activetcl*/lib",
+        "c:/Tcl*/lib", "c:/tcl*/lib",
         "c:/Program Files/ActiveTcl*/lib", "c:/Program Files/Activetcl*/lib",
         "c:/Program Files/activeTcl*/lib", "c:/Program Files/activetcl*/lib",
         "c:/Program Files/Tcl*/lib", "c:/Program Files/tcl*/lib",
-        "/ActiveTcl*/lib", "/Activetcl*/lib", 
-        "/activeTcl*/lib", "/activetcl*/lib", 
-        "/Tcl*/lib", "/tcl*/lib", 
+        "/ActiveTcl*/lib", "/Activetcl*/lib",
+        "/activeTcl*/lib", "/activetcl*/lib",
+        "/Tcl*/lib", "/tcl*/lib",
         "/Program Files/ActiveTcl*/lib", "/Program Files/Activetcl*/lib",
         "/Program Files/activeTcl*/lib", "/Program Files/activetcl*/lib",
         "/Program Files/Tcl*/lib", "/Program Files/tcl*/lib"
       ]
     else
       dirs = [
-        "c:/Tcl*/lib", "c:/tcl*/lib", 
+        "c:/Tcl*/lib", "c:/tcl*/lib",
         "c:/Program Files/Tcl*/lib", "c:/Program Files/tcl*/lib",
-        "/Tcl*/lib", "/tcl*/lib", 
+        "/Tcl*/lib", "/tcl*/lib",
         "/Program Files/Tcl*/lib", "/Program Files/tcl*/lib"
       ]
     end
@@ -427,14 +427,14 @@ def get_tclConfig_dirs
     config_dir.concat [
       RbConfig::CONFIG['libdir'],
       File.join(RbConfig::CONFIG['exec_prefix'], 'lib'),
-      File.join(RbConfig::CONFIG['prefix'], 'lib'), 
-      "/usr/local/opt/lib", "/usr/local/pkg/lib", "/usr/local/share/lib", 
-      "/usr/local/lib", "/usr/opt/lib", "/usr/pkg/lib", 
+      File.join(RbConfig::CONFIG['prefix'], 'lib'),
+      "/usr/local/opt/lib", "/usr/local/pkg/lib", "/usr/local/share/lib",
+      "/usr/local/lib", "/usr/opt/lib", "/usr/pkg/lib",
       "/usr/share/lib", "/usr/contrib/lib", "/usr/lib"
     ]
 
     config_dir.concat [
-      '/opt', '/pkg', '/share', 
+      '/opt', '/pkg', '/share',
       '/usr/local/opt', '/usr/local/pkg', '/usr/local/share', '/usr/local',
       '/usr/opt', '/usr/pkg', '/usr/share', '/usr/contrib', '/usr'
     ].map{|dir|
@@ -458,7 +458,7 @@ def get_tclConfig_dirs
     config_dir << "/System/Library/Tcl"
     config_dir.concat(Dir.glob("/System/Library/Tcl/*").sort.reverse)
     [
-      #"~/Library/Frameworks", 
+      #"~/Library/Frameworks",
       "/Library/Frameworks",
       "/Network/Library/Frameworks", "/System/Library/Frameworks"
     ].each{|framework|
@@ -600,7 +600,7 @@ def search_tclConfig(*paths) # libdir list or [tcl-libdir|file, tk-libdir|file]
 end
 
 def get_tclConfig(tclConfig_file, tkConfig_file, tclConfig_dir, tkConfig_dir)
-  use_tclConfig = (tclConfig_file != false) && (tkConfig_file != false) && 
+  use_tclConfig = (tclConfig_file != false) && (tkConfig_file != false) &&
     (tclConfig_dir != false) && (tkConfig_dir != false)
 
   unless use_tclConfig
@@ -636,8 +636,8 @@ def get_tclConfig(tclConfig_file, tkConfig_file, tclConfig_dir, tkConfig_dir)
 
   print("Search tclConfig.sh and tkConfig.sh.")
   if tclConfig_dir
-    tclConfig, tkConfig = 
-      search_tclConfig([ ((tclConfig_file)? tclConfig_file: tclConfig_dir), 
+    tclConfig, tkConfig =
+      search_tclConfig([ ((tclConfig_file)? tclConfig_file: tclConfig_dir),
                          ((tkConfig_file)?  tkConfig_file:  tkConfig_dir) ])
   else
     tclConfig, tkConfig = search_tclConfig()
@@ -935,7 +935,7 @@ def find_tk(tklib, stubs, version, *opt_paths)
   ret
 end
 
-def find_tcltk_library(tcllib, tklib, stubs, tclversion, tkversion, 
+def find_tcltk_library(tcllib, tklib, stubs, tclversion, tkversion,
                        tcl_opt_paths, tk_opt_paths)
   ret = find_tcl(tcllib, stubs, tclversion, *tcl_opt_paths)
   unless ret && ret.find{|path, val| val}
@@ -970,7 +970,7 @@ def find_tcltk_header(tclver, tkver)
     base_dir.delete_if{|path| path =~ / /}
   end
 
-  if TclConfig_Info['TCL_INCLUDE_SPEC'] && 
+  if TclConfig_Info['TCL_INCLUDE_SPEC'] &&
       have_tcl_h = try_cpp('tcl.h', TclConfig_Info['TCL_INCLUDE_SPEC'])
     $INCFLAGS << " " << TclConfig_Info['TCL_INCLUDE_SPEC']
   elsif have_tcl_h = have_header('tcl.h')
@@ -982,7 +982,7 @@ def find_tcltk_header(tclver, tkver)
       versions = TkLib_Config['search_versions']
     end
     paths = base_dir.dup
-    versions.each{|ver| 
+    versions.each{|ver|
       paths.concat(base_dir.map{|dir|
                      [dir + '/tcl' + ver, dir + '/tcl' + ver.delete('.')]
                    }.flatten)
@@ -990,7 +990,7 @@ def find_tcltk_header(tclver, tkver)
     have_tcl_h = find_header('tcl.h', *paths)
   end
 
-  if TkConfig_Info['TK_INCLUDE_SPEC'] && 
+  if TkConfig_Info['TK_INCLUDE_SPEC'] &&
       have_tk_h = try_cpp('tk.h', TclConfig_Info['TK_INCLUDE_SPEC'])
     $INCFLAGS << " " << TkConfig_Info['TK_INCLUDE_SPEC']
   elsif have_tk_h = have_header('tk.h')
@@ -1002,7 +1002,7 @@ def find_tcltk_header(tclver, tkver)
       versions = TkLib_Config['search_versions']
     end
     paths = base_dir.dup
-    versions.each{|ver| 
+    versions.each{|ver|
       paths.concat(base_dir.map{|dir|
                      [dir + '/tk' + ver, dir + '/tk' + ver.delete('.')]
                    }.flatten)
@@ -1015,12 +1015,12 @@ end
 
 def setup_for_macosx_framework
   # search directory of header files
-  if File.exist?(dir = File.join(TkLib_Config["tcltk-framework"], 
+  if File.exist?(dir = File.join(TkLib_Config["tcltk-framework"],
                                  'Tcl.framework', 'Headers'))
     TclConfig_Info['TCL_INCLUDE_SPEC'] = "-I#{dir} "
     TclConfig_Info['TK_INCLUDE_SPEC'] = "-I#{File.join(TkLib_Config['tcltk-framework'], 'Tk.framework', 'Headers')} "
   else
-    dir = Dir.glob(File.join(TkLib_Config["tcltk-framework"], 
+    dir = Dir.glob(File.join(TkLib_Config["tcltk-framework"],
                              'Tcl.framework', '*', 'Headers'))
     TclConfig_Info['TCL_INCLUDE_SPEC'] = "-I#{dir[0]} " unless dir.empty?
     TclConfig_Info['TK_INCLUDE_SPEC'] = "-I#{Dir.glob(File.join(TkLib_Config['tcltk-framework'], 'Tk.framework', '*', 'Headers'))[0]} "
@@ -1029,11 +1029,11 @@ def setup_for_macosx_framework
   $LDFLAGS << ' -framework Tk -framework Tcl'
 
   if TkLib_Config["tcl-framework-header"]
-    TclConfig_Info['TCL_INCLUDE_SPEC'] = 
+    TclConfig_Info['TCL_INCLUDE_SPEC'] =
       "-I#{TkLib_Config["tcl-framework-header"]} "
   end
   if TkLib_Config["tk-framework-header"]
-    TkConfig_Info['TK_INCLUDE_SPEC'] = 
+    TkConfig_Info['TK_INCLUDE_SPEC'] =
       "-I#{TkLib_Config["tk-framework-header"]} "
   end
 end
@@ -1135,9 +1135,9 @@ def pthread_check()
 **
 ** NATIVETHREAD SUPPORT CHECK WARNING:
 **
-**   We cannot check the consistency of nativethread support between 
+**   We cannot check the consistency of nativethread support between
 **   Ruby and the Tcl/Tk library in your environment (are you perhaps
-**   cross-compiling?). If nativethread support for these 2 packages 
+**   cross-compiling?). If nativethread support for these 2 packages
 **   is inconsistent you may find you get errors when running Ruby/Tk
 **   (e.g. hangs or segmentation faults).  We strongly recommend
 **   you to check the consistency manually.
@@ -1180,17 +1180,17 @@ EOF
 **
 ** NATIVETHREAD SUPPORT MODE WARNING:
 **
-**   Ruby is compiled with --enable-pthread, but your Tcl/Tk library 
-**   seems to be compiled without nativethread support. Although you can 
-**   create the tcltklib library, this combination may cause errors (e.g. 
-**   hangs or segmentation faults). If you have no reason to keep the 
-**   current nativethread support status, we recommend you reconfigure and 
+**   Ruby is compiled with --enable-pthread, but your Tcl/Tk library
+**   seems to be compiled without nativethread support. Although you can
+**   create the tcltklib library, this combination may cause errors (e.g.
+**   hangs or segmentation faults). If you have no reason to keep the
+**   current nativethread support status, we recommend you reconfigure and
 **   recompile the libraries so that both or neither support nativethreads.
 **
 **   If you want change the status of nativethread support, please recompile
 **   Ruby without "--enable-pthread" configure option (If you use Ruby 1.9.x
 **   or later, you cannot remove this option, because it requires native-
-**   thread support.) or recompile Tcl/Tk with "--enable-threads" configure 
+**   thread support.) or recompile Tcl/Tk with "--enable-threads" configure
 **   option (if your Tcl/Tk is later than or equal to Tcl/Tk 8.1).
 **
 *****************************************************************************
@@ -1279,14 +1279,14 @@ end
 $CPPFLAGS += ' -D_WIN32' if /cygwin/ =~ RUBY_PLATFORM
 
 # Does ruby have nativethread ?
-TkLib_Config["ruby_with_thread"] = 
+TkLib_Config["ruby_with_thread"] =
   macro_defined?('HAVE_NATIVETHREAD', '#include "ruby.h"')
 
 
 #---------------------------------------------------
 # check requirement of Tcl/tk version
 tcltk_version = with_config("tcltkversion")
-tclver, tkver = 
+tclver, tkver =
   TkLib_Config["tcltkversion"] = check_tcltk_version(tcltk_version)
 puts("Specified Tcl/Tk version is #{[tclver, tkver].inspect}") if tclver&&tkver
 
@@ -1299,12 +1299,12 @@ end
 TkLib_Config["ActiveTcl"] = activeTcl
 
 # allow space chars on a libpath
-TkLib_Config["space-on-tk-libpath"] = 
+TkLib_Config["space-on-tk-libpath"] =
   enable_config("space-on-tk-libpath", ! is_win32?)
 
 # enable Tcl/Tk stubs?
 =begin
-if TclConfig_Info['TCL_STUB_LIB_SPEC'] && TkConfig_Info['TK_STUB_LIB_SPEC'] && 
+if TclConfig_Info['TCL_STUB_LIB_SPEC'] && TkConfig_Info['TK_STUB_LIB_SPEC'] &&
     !TclConfig_Info['TCL_STUB_LIB_SPEC'].strip.empty? &&
     !TkConfig_Info['TK_STUB_LIB_SPEC'].strip.empty?
   stubs = true
@@ -1380,7 +1380,7 @@ use_X = search_X_libraries
 
 if (TkLib_Config["tcltk-framework"] ||
       ( find_tcltk_header(tclver, tkver) &&
-          find_tcltk_library(tcllib, tklib, stubs, tclver, tkver, 
+          find_tcltk_library(tcllib, tklib, stubs, tclver, tkver,
                              tcl_ldir_list, tk_ldir_list) ) ) &&
     (stubs || pthread_check())
   # create Makefile

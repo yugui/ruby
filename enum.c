@@ -2018,7 +2018,7 @@ chunk_i(VALUE yielder, VALUE enumerator, int argc, VALUE *argv)
  *  splitted as follows.
  *
  *    [3,1,4,1,5,9,2,6,5,3,5].chunk {|n|
- *      n.even?          
+ *      n.even?
  *    }.each {|even, ary|
  *      p [even, ary]
  *    }
@@ -2050,12 +2050,12 @@ chunk_i(VALUE yielder, VALUE enumerator, int argc, VALUE *argv)
  *  For example, the sequence of hyphens in svn log can be eliminated as follows.
  *
  *    sep = "-"*72 + "\n"
- *    IO.popen("svn log README") {|f|                 
+ *    IO.popen("svn log README") {|f|
  *      f.chunk {|line|
  *        line != sep || nil
  *      }.each {|_, lines|
  *        pp lines
- *      }      
+ *      }
  *    }
  *    #=> ["r20018 | knu | 2008-10-29 13:20:42 +0900 (Wed, 29 Oct 2008) | 2 lines\n",
  *    #    "\n",
@@ -2067,7 +2067,7 @@ chunk_i(VALUE yielder, VALUE enumerator, int argc, VALUE *argv)
  *    #    "\n"]
  *    #   ...
  *
- *  paragraphs separated by empty lines can be parsed as follows. 
+ *  paragraphs separated by empty lines can be parsed as follows.
  *
  *    File.foreach("README").chunk {|line|
  *      /\A\s*\z/ !~ line || nil
@@ -2183,7 +2183,7 @@ slicebefore_i(VALUE yielder, VALUE enumerator, int argc, VALUE *argv)
  *
  *  Creates an enumerator for each chunked elements.
  *  The beginnings of chunks are defined by _pattern_ and the block.
- *  If _pattern_ === _elt_ returns true or 
+ *  If _pattern_ === _elt_ returns true or
  *  the block returns true for the element,
  *  the element is beginning of a chunk.
  *
@@ -2208,7 +2208,7 @@ slicebefore_i(VALUE yielder, VALUE enumerator, int argc, VALUE *argv)
  *    }
  *
  * "svn proplist -R" produces multiline output for each file.
- * They can be chunked as follows: 
+ * They can be chunked as follows:
  *
  *    IO.popen([{"LC_ALL"=>"C"}, "svn", "proplist", "-R"]) {|f|
  *      f.lines.slice_before(/\AProp/).each {|lines| p lines }

@@ -8,7 +8,7 @@ irb -- interactive ruby
 = What is irb?
 
 irb stands for `interactive ruby'. irb is a tool to execute interactively
-ruby expressions read from stdin. 
+ruby expressions read from stdin.
 
 = Invoking
 
@@ -16,9 +16,9 @@ ruby expressions read from stdin.
 
 = Usage
 
-Use of irb is easy if you know ruby.  Executing irb, prompts are 
+Use of irb is easy if you know ruby.  Executing irb, prompts are
 displayed as follows. Then, enter expression of ruby. A input is
-executed when it is syntacticaly completed. 
+executed when it is syntacticaly completed.
 
   dim% irb
   irb(main):001:0> 1+2
@@ -29,16 +29,16 @@ executed when it is syntacticaly completed.
   irb(main):005:2>  end
   irb(main):006:1> end
   nil
-  irb(main):007:0> 
+  irb(main):007:0>
 
 And, Readline extesion module can be used with irb. Using Readline
-is the standard default action if Readline is installed. 
+is the standard default action if Readline is installed.
 
 = Command line option
 
   irb.rb [options] file_name opts
   options:
-  -f		    suppress read ~/.irbrc 
+  -f		    suppress read ~/.irbrc
   -m		    bc mode (fraction or matrix are available)
   -d                set $DEBUG  to true (same as `ruby -d')
   -Kc		    same as `ruby -Kc'
@@ -55,25 +55,25 @@ is the standard default action if Readline is installed.
   --prompt-mode prompt-mode
 		    switches prompt mode. Pre-defined prompt modes are
 		    `default', `simple', `xmp' and `inf-ruby'
-			    
-  --inf-ruby-mode   uses prompt appreciate for inf-ruby-mode on emacs. 
-		    Suppresses --readline. 
+
+  --inf-ruby-mode   uses prompt appreciate for inf-ruby-mode on emacs.
+		    Suppresses --readline.
   --simple-prompt   simple prompt mode
   --noprompt	    no prompt
   --tracer	    display trace for each execution of commands.
   --back-trace-limit n
 		    displayes backtrace top n and tail n. The default
-		    value is 16. 
+		    value is 16.
   --irb_debug n	    sets internal debug level to n (It shouldn't be used)
   -v, --version	    prints the version of irb
 
 = Configurations
 
 irb reads `~/.irbrc' when it is invoked. If `~/.irbrb' doesn't exist
-irb try to read in the order `.irbrc', `irb.rc', `_irbrc' then `$irbrc'. 
+irb try to read in the order `.irbrc', `irb.rc', `_irbrc' then `$irbrc'.
 
 The following is altanative to the command line option. To use them
-type as follows in an irb session. 
+type as follows in an irb session.
 
   IRB.conf[:IRB_NAME]="irb"
   IRB.conf[:MATH_MODE]=false
@@ -100,7 +100,7 @@ To costomize the prompt you set a variable
 
   IRB.conf[:PROMPT]
 
-For example, describe as follows in `.irbrc'. 
+For example, describe as follows in `.irbrc'.
 
   IRB.conf[:PROMPT][:MY_PROMPT] = { # name of prompt mode
     :PROMPT_I => nil,		  # normal prompt
@@ -113,20 +113,20 @@ Then, invoke irb with the above prompt mode by
 
   % irb --prompt my-prompt
 
-Or add the following in `.irbrc'. 
+Or add the following in `.irbrc'.
 
   IRB.conf[:PROMPT_MODE] = :MY_PROMPT
 
-Constants PROMPT_I, PROMPT_S and PROMPT_C specifies the format. 
-In the prompt specification, some special strings are available. 
+Constants PROMPT_I, PROMPT_S and PROMPT_C specifies the format.
+In the prompt specification, some special strings are available.
 
   %N	command name which is running
   %m	to_s of main object (self)
   %M	inspect of main object (self)
   %l	type of string(", ', /, ]), `]' is inner %w[...]
-  %NNi	indent level. NN is degits and means as same as printf("%NNd"). 
+  %NNi	indent level. NN is degits and means as same as printf("%NNd").
         It can be ommited
-  %NNn	line number. 
+  %NNn	line number.
   %%    %
 
 For instance, the default prompt mode is defined as follows:
@@ -136,70 +136,70 @@ IRB.conf[:PROMPT_MODE][:DEFAULT] = {
       :PROMPT_S => "%N(%m):%03n:%i%l ",
       :PROMPT_C => "%N(%m):%03n:%i* ",
       :RETURN => "%s\n"
-} 
+}
 
-RETURN is used to printf. 
+RETURN is used to printf.
 
 == Configurating subirb
 
 The command line option or IRB.conf specify the default behavior of
-(sub)irb. On the other hand, each conf of in the next sction `6. Command' 
-is used to individually configurate (sub)irb. 
+(sub)irb. On the other hand, each conf of in the next sction `6. Command'
+is used to individually configurate (sub)irb.
 
 If proc is set to IRB.conf[:IRB_RC], its subirb will be invoked after
 execution of that proc under giving the context of irb as its
-aregument. By this mechanism each subirb can be configurated. 
+aregument. By this mechanism each subirb can be configurated.
 
 = Command
 
-For irb commands, both simple name and `irb_'-prefixed name are prepared. 
+For irb commands, both simple name and `irb_'-prefixed name are prepared.
 
---- exit, quit, irb_exit	
-    Quits (sub)irb. 
+--- exit, quit, irb_exit
+    Quits (sub)irb.
 
 --- conf, irb_context
     Displays current configuration. Modifing the configuration is
-    achieved by sending message to `conf'. 
+    achieved by sending message to `conf'.
 
 --- conf.eval_history = N
     Sets execution result history.
-    N is a integer or nil. If N > 0, the number of historys is N. 
+    N is a integer or nil. If N > 0, the number of historys is N.
     If N == 0, the number of historys is unlimited. If N is nill,
     execution result history isn't used(default).
 
 --- conf.back_trace_limit
-    Sets display lines of backtrace as top n and tail n. 
+    Sets display lines of backtrace as top n and tail n.
     The default value is 16.
-    
+
 --- conf.debug_level = N
-    Sets debug level of irb. 
+    Sets debug level of irb.
 
 --- conf.ignore_eof = true/false
-    Whether ^D (control-d) will be ignored or not. 
-    If false is set, ^D means quit. 
+    Whether ^D (control-d) will be ignored or not.
+    If false is set, ^D means quit.
 
 --- conf.ignore_sigint= true/false
-    Whether ^C (control-c) will be ignored or not. 
-    If false is set, ^D means quit.  If true, 
-      during input:   cancel inputing then return to top level. 
-      during execute: abondon current execution. 
+    Whether ^C (control-c) will be ignored or not.
+    If false is set, ^D means quit.  If true,
+      during input:   cancel inputing then return to top level.
+      during execute: abondon current execution.
 
 --- conf.inf_ruby_mode = true/false
     Whether inf-ruby-mode or not. The default value is false.
 
 --- conf.inspect_mode = true/false/nil
-    Specifies inspect mode. 
+    Specifies inspect mode.
     true:  display inspect
     false: display to_s
-    nil:   inspect mode in non math mode, 
-           non inspect mode in math mode. 
+    nil:   inspect mode in non math mode,
+           non inspect mode in math mode.
 
 --- conf.math_mode
-    Whether bc mode or not. 
+    Whether bc mode or not.
 
 --- conf.use_loader = true/false
-    Whether irb's own file reader method is used when load/require or not. 
-    This mode is globaly affected (irb wide). 
+    Whether irb's own file reader method is used when load/require or not.
+    This mode is globaly affected (irb wide).
 
 --- conf.prompt_c
     prompt for a continuating statement (e.g, immediately after of `if')
@@ -211,19 +211,19 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
     prompt for a continuating string
 
 --- conf.rc
-    Whether ~/.irbrc is read or not. 
+    Whether ~/.irbrc is read or not.
 
 --- conf.use_prompt = true/false
-    Prompting or not. 
+    Prompting or not.
 
 --- conf.use_readline = true/false/nil
-    Whether readline is used or not. 
-    true: uses 
+    Whether readline is used or not.
+    true: uses
     false: doen't use
     nil: intends to use readline except for inf-ruby-mode (default)
 #
 #--- conf.verbose=T/F
-#    Whether verbose messages are display or not. 
+#    Whether verbose messages are display or not.
 
 --- cws, chws, irb_change_workspace [obj]
     obj will be self. If obj is omitted, self will be home-object, or
@@ -236,7 +236,7 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
     same as UNIX-shell command popd
 
 --- irb [obj]
-    Invoke subirb. If obj is given, obj will be self. 
+    Invoke subirb. If obj is given, obj will be self.
 
 --- jobs, irb_jobs
     List of subirb
@@ -250,7 +250,7 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
       self(obj which is specified of irb obj)
 
 --- kill n, irb_kill n
-    Kill subirb. The means of n is as same as the case of irb_fg. 
+    Kill subirb. The means of n is as same as the case of irb_fg.
 
 --- souce, irb_source  path
     This is a like UNIX-shell command source. evaluate script in path
@@ -279,7 +279,7 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
   nil
   irb(main):002:0> class Foo;end
   nil
-  irb(main):003:0> irb Foo                    # invoke subirb which has the 
+  irb(main):003:0> irb Foo                    # invoke subirb which has the
 					      #              context of Foo
   irb#2(Foo):001:0> def foo                   # define Foo#foo
   irb#2(Foo):002:1>   print 1
@@ -302,7 +302,7 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
   nil
   irb#2(Foo):010:0>  Foo.instance_methods
   ["bar", "foo"]
-  irb#2(Foo):011:0> fg 0                      
+  irb#2(Foo):011:0> fg 0
   nil
   irb(main):007:0> f = Foo.new
   #<Foo:0x4010af3c>
@@ -324,13 +324,13 @@ For irb commands, both simple name and `irb_'-prefixed name are prepared.
   #0->irb on main (#<Thread:0x400fb7e4> : running)
   nil
   irb(main):010:0> exit                       # exit
-  dim% 
+  dim%
 
 = Restrictions
 
 Because irb evaluates the inputs immediately after the imput is
 syntactically completed, irb gives slight different result than
-directly use ruby. Known difference is pointed out here. 
+directly use ruby. Known difference is pointed out here.
 
 
 == Declaration of the local variable
@@ -344,7 +344,7 @@ The following causes an error in ruby:
   ---
   NameError
 
-Though, the above will successfully done by irb. 
+Though, the above will successfully done by irb.
 
   >> eval "foo = 0"
  => 0
@@ -355,7 +355,7 @@ Ruby evaluates a code after reading entire of code and determination
 of the scope of local variables. On the other hand, irb do
 immediately. More precisely, irb evaluate at first
 
-  evel "foo = 0" 
+  evel "foo = 0"
 
 then foo is defined on this timing. It is because of this
 incompatibility.
@@ -372,7 +372,7 @@ If you'd like to detect those differences, begin...end can be used:
 
 == Here-document
 
-Implementation of Here-document is incomplete. 
+Implementation of Here-document is incomplete.
 
 == Symbol
 

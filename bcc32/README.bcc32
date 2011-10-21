@@ -36,9 +36,9 @@
     You can also specify the install directory.
     For example, run `((%configure --prefix=<install_directory>%))'
     Default of the install directory is /usr .
-     
+
 (2) Change ((|RUBY_INSTALL_NAME|)) and ((|RUBY_SO_NAME|)) in (({Makefile}))
-    if you want to change the name of the executable files. 
+    if you want to change the name of the executable files.
     And add ((|RUBYW_INSTALL_NAME|)) to change the name of the
     executable without console window if also you want.
 
@@ -75,8 +75,8 @@ to their base names.
     $(RUBYW_INSTALL_NAME).ico or rubyw.ico --> $(RUBYW_INSTALL_NAME).exe
     the others                             --> $(RUBY_SO_NAME).dll
 
-Although no icons are distributed with the ruby source or in the official 
-site, you can use anything you like. For example, followings are written 
+Although no icons are distributed with the ruby source or in the official
+site, you can use anything you like. For example, followings are written
 in Japanese, but you can download at least.
 
 * ((<URL:http://member.nifty.ne.jp/ueivu/rubyico.html>)) or
@@ -100,7 +100,7 @@ in Japanese, but you can download at least.
     make test
     make install
 
-* Build on the relative directory from the ruby source directory and CPU type 
+* Build on the relative directory from the ruby source directory and CPU type
   i386.
 
   ex.)
@@ -108,7 +108,7 @@ in Japanese, but you can download at least.
     build directory:        C:\ruby\bccwin32
     install directory:      C:\usr\local
     CPU                     i386
-    
+
     C:
     cd \ruby
     mkdir bccwin32

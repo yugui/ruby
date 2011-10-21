@@ -33,7 +33,7 @@ Once installed, you can create documentation using the 'rdoc' command
 Type "rdoc --help" for an up-to-date option summary.
 
 A typical use might be to generate documentation for a package of Ruby
-source (such as rdoc itself). 
+source (such as rdoc itself).
 
   % rdoc
 
@@ -68,7 +68,7 @@ you use the latter form, the =begin line must be flagged with an RDoc tag:
 
   =begin rdoc
   Documentation to be processed by RDoc.
-  
+
   ...
   =end
 
@@ -83,14 +83,14 @@ turned back on with a line that starts '+#+++'.
   # FIXME: fails if the birthday falls on February 29th
   #++
   # The DOB is returned as a Time object.
-  
+
   def get_dob(person)
     # ...
   end
 
 Names of classes, source files, and any method names containing an underscore
 or preceded by a hash character are automatically hyperlinked from comment text
-to their description. 
+to their description.
 
 Method parameter lists are extracted and displayed with the method description.
 If a method calls +yield+, then the parameters passed to yield will also be
@@ -109,7 +109,7 @@ after the method definition
 
   def fred # :yields: index, position
     # ...
-  
+
     yield line, address
 
 which will get documented as
@@ -128,17 +128,17 @@ after the start of the document element they are modifying.
   omitted.  By default, though, modules and classes within that
   class of module _will_ be documented.  This is turned off by
   adding the +all+ modifier.
-  
+
     module MyModule # :nodoc:
       class Input
       end
     end
-    
+
     module OtherModule # :nodoc: all
       class Output
       end
     end
-  
+
   In the above code, only class +MyModule::Input+ will be documented.
 
 [+:doc:+]
@@ -163,7 +163,7 @@ Comment blocks can contain other directives:
   comment block may have one or more lines before the :section: directive.
   These will be removed, and any identical lines at the end of the block are
   also removed.  This allows you to add visual cues such as:
-    
+
     # ----------------------------------------
     # :section: My Section
     # This is the section that I wrote.
@@ -210,7 +210,7 @@ Author::   Dave Thomas <dave@pragmaticprogrammer.com>
   parser for irb and the rtags package.
 
 * Code to diagram classes and modules was written by Sergey A Yanovitsky
-  (Jah) of Enticla. 
+  (Jah) of Enticla.
 
 * Charset patch from MoonWolf.
 

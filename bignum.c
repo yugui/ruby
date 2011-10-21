@@ -2454,7 +2454,7 @@ big_shift(VALUE x, long n)
     return x;
 }
 
-static VALUE 
+static VALUE
 big_fdiv(VALUE x, VALUE y)
 {
 #define DBL_BIGDIG ((DBL_MANT_DIG + BITSPERDIG) / BITSPERDIG)

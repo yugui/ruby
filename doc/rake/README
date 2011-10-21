@@ -1,4 +1,4 @@
-= RAKE -- Ruby Make 
+= RAKE -- Ruby Make
 
 Supporting Rake version: 0.8.6
 
@@ -52,7 +52,7 @@ First, you must write a "Rakefile" file which contains the build rules. Here's
 a simple example:
 
   task :default => [:test]
-  
+
   task :test do
     ruby "test/unittest.rb"
   end

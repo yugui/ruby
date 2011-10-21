@@ -2149,7 +2149,7 @@ rb_Integer(VALUE val)
  *  when <i>base</i> is omitted or equals to zero, radix indicators
  *  (<code>0</code>, <code>0b</code>, and <code>0x</code>) are honored.
  *  In any case, strings should be strictly conformed to numeric
- *  representation. This behavior is different from that of 
+ *  representation. This behavior is different from that of
  *  <code>String#to_i</code>.  Non string valueswill be converted using
  *  <code>to_int</code>, and <code>to_i</code>.
  *

@@ -260,7 +260,7 @@ actions.
 
    task :dont do
      Rake::Task[:doit].clear
-   end        
+   end
 
 Running this example:
 
@@ -269,7 +269,7 @@ Running this example:
   DONE
   $ rake dont doit
   (in /Users/jim/working/git/rake/x)
-  $ 
+  $
 
 The ability to programmatically manipulate tasks gives rake very
 powerful meta-programming capabilities w.r.t. task execution, but
@@ -294,7 +294,7 @@ Rake is able to find a file named "mycode.c", it will automatically
 create a task that builds "mycode.o" from "mycode.c".
 
 If the file "mycode.c" does not exist, rake will attempt
-to recursively synthesize a rule for it. 
+to recursively synthesize a rule for it.
 
 When a task is synthesized from a rule, the +source+ attribute of the
 task is set to the matching source file.  This allows us to write
@@ -312,7 +312,7 @@ The following rule is equivalent to the example above.
     proc {|task_name| task_name.sub(/\.[^.]+$/, '.c') }
   ]) do |t|
     sh "cc #{t.source} -c -o #{t.name}"
-  end    
+  end
 
 <b>NOTE:</b> Because of a _quirk_ in Ruby syntax, parenthesis are
 required on *rule* when the first argument is a regular expression.
@@ -322,7 +322,7 @@ The following rule might be used for Java files ...
   rule '.java' => [
     proc { |tn| tn.sub(/\.class$/, '.java').sub(/^classes\//, 'src/') }
   ] do |t|
-    java_compile(t.source, t.name)  
+    java_compile(t.source, t.name)
   end
 
 <b>NOTE:</b> +java_compile+ is a hypothetical method that invokes the
@@ -429,7 +429,7 @@ Nested namespaces are supported, so
 
 Note that the name given in the +task+ command is always the unadorned
 task name without any namespace prefixes.  The +task+ command always
-defines a task in the current namespace.  
+defines a task in the current namespace.
 
 === FileTasks
 

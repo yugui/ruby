@@ -104,7 +104,7 @@ rb_dlptr2cptr(VALUE val)
     else{
 	rb_raise(rb_eTypeError, "DL::PtrData was expected");
     }
-    
+
     return ptr;
 }
 
@@ -443,7 +443,7 @@ rb_dlptr_s_to_ptr(VALUE self, VALUE val)
     }
     else if (rb_obj_is_kind_of(val, rb_cString) == Qtrue){
         char *str = StringValuePtr(val);
-        ptr = rb_dlptr_new(str, RSTRING_LEN(val), NULL); 
+        ptr = rb_dlptr_new(str, RSTRING_LEN(val), NULL);
     }
     else if (rb_respond_to(val, id_to_ptr)){
 	VALUE vptr = rb_funcall(val, id_to_ptr, 0);

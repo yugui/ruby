@@ -1189,10 +1189,10 @@ module TkCore
           #   the main application thread.
           #
           # *** ADD (2009/05/10) ***
-          #   In some cases (I don't know the description of conditions), 
-          #   TkAqua 8.4.7 has a same kind of hang-up trouble. 
-          #   So, if 8.4.7 or later, set RUN_EVENTLOOP_ON_MAIN_THREAD to true. 
-          #   When you want to control this mode, please call the following 
+          #   In some cases (I don't know the description of conditions),
+          #   TkAqua 8.4.7 has a same kind of hang-up trouble.
+          #   So, if 8.4.7 or later, set RUN_EVENTLOOP_ON_MAIN_THREAD to true.
+          #   When you want to control this mode, please call the following
           #   (set true/false as you want) before "require 'tk'".
           #   ----------------------------------------------------------
           #   module TkCore; RUN_EVENTLOOP_ON_MAIN_THREAD = true; end
@@ -1261,7 +1261,7 @@ module TkCore
 
         ensure
           # interp must be deleted before the thread for interp is dead.
-          # If not, raise Tcl_Panic on Tcl_AsyncDelete because async handler 
+          # If not, raise Tcl_Panic on Tcl_AsyncDelete because async handler
           # deleted by the wrong thread.
           interp.delete
         end
@@ -1286,7 +1286,7 @@ module TkCore
 
     INTERP.instance_eval{
       # @tk_cmd_tbl = TkUtil.untrust({})
-      @tk_cmd_tbl = 
+      @tk_cmd_tbl =
         TkUtil.untrust(Hash.new{|hash, key|
                          fail IndexError, "unknown command ID '#{key}'"
                        })

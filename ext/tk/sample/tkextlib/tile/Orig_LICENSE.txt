@@ -10,7 +10,7 @@ LICENSE ("MIT-style")
 This software is Copyright (C) 2003 Joe English and other parties.
 
 The following terms apply to all files associated with this software
-unless explicitly disclaimed in individual files.  
+unless explicitly disclaimed in individual files.
 
 The author(s) hereby grant permission to use, copy, modify, distribute,
 and license this software and its documentation for any purpose, provided

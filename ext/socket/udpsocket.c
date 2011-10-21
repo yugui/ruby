@@ -135,7 +135,7 @@ udp_bind(VALUE sock, VALUE host, VALUE port)
  *   udpsocket.send(mesg, flags)              => numbytes_sent
  *
  * Sends _mesg_ via _udpsocket_.
- * 
+ *
  * _flags_ should be a bitwise OR of Socket::MSG_* constants.
  *
  *   u1 = UDPSocket.new
@@ -193,7 +193,7 @@ udp_send(int argc, VALUE *argv, VALUE sock)
  * call-seq:
  * 	udpsocket.recvfrom_nonblock(maxlen) => [mesg, sender_inet_addr]
  * 	udpsocket.recvfrom_nonblock(maxlen, flags) => [mesg, sender_inet_addr]
- * 
+ *
  * Receives up to _maxlen_ bytes from +udpsocket+ using recvfrom(2) after
  * O_NONBLOCK is set for the underlying file descriptor.
  * If _maxlen_ is ommitted, its default value is 65536.
@@ -204,11 +204,11 @@ udp_send(int argc, VALUE *argv, VALUE sock)
  * When recvfrom(2) returns 0,
  * Socket#recvfrom_nonblock returns an empty string as data.
  * It means an empty packet.
- * 
+ *
  * === Parameters
  * * +maxlen+ - the number of bytes to receive from the socket
- * * +flags+ - zero or more of the +MSG_+ options 
- * 
+ * * +flags+ - zero or more of the +MSG_+ options
+ *
  * === Example
  * 	require 'socket'
  * 	s1 = UDPSocket.new
@@ -226,7 +226,7 @@ udp_send(int argc, VALUE *argv, VALUE sock)
  * 	end
  *
  * Refer to Socket#recvfrom for the exceptions that may be thrown if the call
- * to _recvfrom_nonblock_ fails. 
+ * to _recvfrom_nonblock_ fails.
  *
  * UDPSocket#recvfrom_nonblock may raise any error corresponding to recvfrom(2) failure,
  * including Errno::EWOULDBLOCK.

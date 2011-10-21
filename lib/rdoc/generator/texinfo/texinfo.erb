@@ -22,7 +22,7 @@
 @end menu
 
 <% (@v['classes'] || []).each_with_index do |klass, i| %>
-<%= TexinfoTemplate.new(@v.merge('class' => klass.values), 
+<%= TexinfoTemplate.new(@v.merge('class' => klass.values),
                         'class.texinfo.erb').render %><% end %>
 
 @bye

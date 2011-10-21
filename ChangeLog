@@ -452,7 +452,7 @@ Tue Oct  6 06:26:00 2009  Hidetoshi NAGAI  <nagai@ai.kyutech.ac.jp>
 
 	* ext/tk/lib/tkextlib/vu/dial.rb: fix logical bug.
 
-	* ext/tk/lib/tk/canvas.rb, ext/tk/lib/tkextlib/blt/component.rb: 
+	* ext/tk/lib/tk/canvas.rb, ext/tk/lib/tkextlib/blt/component.rb:
 	  lack of support for methodcall_optkeys.
 
 Mon Oct  5 17:19:33 2009  Yukihiro Matsumoto  <matz@ruby-lang.org>
@@ -791,7 +791,7 @@ Mon Sep 28 12:13:15 2009  Yukihiro Matsumoto  <matz@ruby-lang.org>
 	  method_missing with same symbol should be equal.
 	  [ruby-core:25755]
 
-	* proc.c (mnew): should always return method object.  
+	* proc.c (mnew): should always return method object.
 
 Mon Sep 28 11:38:07 2009  NAKAMURA Usaku  <usa@ruby-lang.org>
 
@@ -1282,18 +1282,18 @@ Wed Sep 16 06:30:07 2009  Marc-Andre Lafortune  <ruby-core@marc-andre.ca>
 
 	* thread.c (rb_exec_recursive_outer, rb_exec_recursive): Added method
 	  to short-circuit to the outermost level in case of recursion
-	
+
 	* test/ruby/test_thread.rb (test_recursive_outer): Test for above
-	
+
 	* hash.c (rb_hash_hash): Return a sensible hash for in case of
 	  recursion [ruby-core:24648]
-	
+
 	* range.c (rb_range_hash): ditto
-	
+
 	* struct.c (rb_struct_hash): ditto
-	
+
 	* array.c (rb_array_hash): ditto
-	
+
 	* test/ruby/test_array.rb (test_hash2): test for above
 
 Wed Sep 16 06:17:33 2009  Marc-Andre Lafortune  <ruby-core@marc-andre.ca>
@@ -1437,7 +1437,7 @@ Sun Sep 13 20:18:49 2009  Nobuyoshi Nakada  <nobu@ruby-lang.org>
 
 Sun Sep 13 19:39:59 2009  Masaki Suketa  <masaki.suketa@nifty.ne.jp>
 
-	* ext/win32ole/win32ole.c: some refactoring. 
+	* ext/win32ole/win32ole.c: some refactoring.
 
 Sun Sep 13 19:38:34 2009  Nobuyoshi Nakada  <nobu@ruby-lang.org>
 
@@ -1478,7 +1478,7 @@ Sun Sep 13 09:34:10 2009  Nobuyoshi Nakada  <nobu@ruby-lang.org>
 
 Sun Sep 13 08:30:30 2009  Masaki Suketa  <masaki.suketa@nifty.ne.jp>
 
-	* ext/win32ole/win32ole.c: fix WIN32OLE_TYPELIB.new when the 1st 
+	* ext/win32ole/win32ole.c: fix WIN32OLE_TYPELIB.new when the 1st
 	  argument is the non-registered file.
 
 Sun Sep 13 02:08:43 2009  Koichi Sasada  <ko1@atdot.net>
@@ -1794,7 +1794,7 @@ Sun Sep  6 17:31:28 2009  Koichi Sasada  <ko1@atdot.net>
 
 Sun Sep  6 16:13:06 2009  Koichi Sasada  <ko1@atdot.net>
 
-	* insns.def (setinstancevariable), vm_insnhelper.c (vm_setivar): 
+	* insns.def (setinstancevariable), vm_insnhelper.c (vm_setivar):
 	  fix to use inline cache (trivial optimization).
 
 Sun Sep  6 10:34:19 2009  Nobuyoshi Nakada  <nobu@ruby-lang.org>
@@ -1901,11 +1901,11 @@ Mon Aug 31 14:17:09 2009  Yuki Sonoda (Yugui)  <yugui@yugui.jp>
 	  (rb_singleton_class): refactored.
 	  (rb_define_singleton_method): it needs a metaclass only
 	  but not its metametaclass.
-	  
+
 	* object.c: booting class hierarchy was moved to class.c
 	  for keeping dependency between compilation units least.
-	  (Init_Object): extracting the booting into 
-	  Init_class_hierarchy. 
+	  (Init_Object): extracting the booting into
+	  Init_class_hierarchy.
 	  (boot_defclass): moved to class.c.
 
 Sun Aug 30 23:44:09 2009  Tanaka Akira  <akr@fsij.org>
@@ -1946,7 +1946,7 @@ Sun Aug 30 03:59:43 2009  Tanaka Akira  <akr@fsij.org>
 	* timev.h (TIME_SCALE): defined as 1000000000.
 	  (struct vtm): subsec is replaced by subsecx.
 	  subsec * TIME_SCALE == subsecx.
-	
+
 	* time.c: avoid rational in most cases.
 	  (struct time_object): timev is replaced by timexv.
 	  timev * TIME_SCALE == timexv.
@@ -2186,7 +2186,7 @@ Sun Aug 23 15:12:22 2009  Tanaka Akira  <akr@fsij.org>
 
 	* bootstraptest/runner.rb (Dir.mktmpdir): updated to latest.
 	  (in_temporary_working_directory): temporary directory name changed.
-	  
+
 Sun Aug 23 00:56:13 2009  Tanaka Akira  <akr@fsij.org>
 
 	* thread.c (rb_thread_schedule): don't recur infinitely.

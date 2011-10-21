@@ -24,7 +24,7 @@ module Gem
       File.join(ConfigMap[:rubylibprefix], 'gems',
                 ConfigMap[:ruby_version])
     # only Ruby 1.9.1 has a peculiar feature
-    elsif RUBY_VERSION > '1.9' and 
+    elsif RUBY_VERSION > '1.9' and
       File.join(ConfigMap[:libdir], ConfigMap[:ruby_install_name], 'gems',
                 ConfigMap[:ruby_version])
     else

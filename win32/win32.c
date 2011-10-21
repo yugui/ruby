@@ -1223,7 +1223,7 @@ cmdglob(NtCmdLineElement *patt, NtCmdLineElement **tail)
     return tail;
 }
 
-// 
+//
 // Check a command string to determine if it has I/O redirection
 // characters that require it to be executed by a command interpreter
 //
@@ -1283,7 +1283,7 @@ skipspace(char *ptr)
     return ptr;
 }
 
-int 
+int
 rb_w32_cmdvector(const char *cmd, char ***vec)
 {
     int globbing, len;
@@ -1311,9 +1311,9 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
     //
     // Ok, parse the command line, building a list of CmdLineElements.
     // When we've finished, and it's an input command (meaning that it's
-    // the processes argv), we'll do globing and then build the argument 
+    // the processes argv), we'll do globing and then build the argument
     // vector.
-    // The outer loop does one interation for each element seen. 
+    // The outer loop does one interation for each element seen.
     // The inner loop does one interation for each character in the element.
     //
 
@@ -1350,7 +1350,7 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
 	      case '?':
 	      case '[':
 	      case '{':
-		// 
+		//
 		// record the fact that this element has a wildcard character
 		// N.B. Don't glob if inside a single quoted string
 		//
@@ -1364,7 +1364,7 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
 	      case '\"':
 		//
 		// if we're already in a string, see if this is the
-		// terminating close-quote. If it is, we're finished with 
+		// terminating close-quote. If it is, we're finished with
 		// the string, but not neccessarily with the element.
 		// If we're not already in a string, start one.
 		//
@@ -1400,7 +1400,7 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
 	if (done) --len;
 
 	//
-	// if it's an input vector element and it's enclosed by quotes, 
+	// if it's an input vector element and it's enclosed by quotes,
 	// we can remove them.
 	//
 
@@ -1462,10 +1462,10 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
     }
 
     //
-    // Almost done! 
+    // Almost done!
     // Count up the elements, then allocate space for a vector of pointers
     // (argv) and a string table for the elements.
-    // 
+    //
 
     for (elements = 0, strsz = 0, curr = cmdhead; curr; curr = curr->next) {
 	elements++;
@@ -1485,7 +1485,7 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
 	for (vptr = *vec; *vptr; ++vptr);
 	return vptr - *vec;
     }
-    
+
     //
     // make vptr point to the start of the buffer
     // and ptr point to the area we'll consider the string table.
@@ -1526,7 +1526,7 @@ rb_w32_cmdvector(const char *cmd, char ***vec)
 //
 // The idea here is to read all the directory names into a string table
 // (separated by nulls) and when one of the other dir functions is called
-// return the pointer to the current file name. 
+// return the pointer to the current file name.
 //
 
 #define GetBit(bits, i) ((bits)[(i) / CHAR_BIT] &  (1 << (i) % CHAR_BIT))
@@ -1610,7 +1610,7 @@ opendir_internal(HANDLE fh, WIN32_FIND_DATAW *fd)
 
 	//
 	// bump the string table size by enough for the
-	// new name and it's null terminator 
+	// new name and it's null terminator
 	//
 	tmpW = realloc(p->start, (idx + len) * sizeof(WCHAR));
 	if (!tmpW) {
@@ -2054,7 +2054,7 @@ rb_w32_is_socket(int fd)
 }
 
 //
-// Since the errors returned by the socket error function 
+// Since the errors returned by the socket error function
 // WSAGetLastError() are not known by the library routine strerror
 // we have to roll our own.
 //
@@ -2135,7 +2135,7 @@ getegid(void)
 
 int
 setuid(rb_uid_t uid)
-{ 
+{
     return (uid == ROOT_UID ? 0 : -1);
 }
 
@@ -2209,7 +2209,7 @@ rb_w32_fdisset(int fd, fd_set *set)
 
 //
 // Networking trampolines
-// These are used to avoid socket startup/shutdown overhead in case 
+// These are used to avoid socket startup/shutdown overhead in case
 // the socket routines aren't used.
 //
 
@@ -2240,7 +2240,7 @@ extract_fd(rb_fdset_t *dst, fd_set *src, int (*func)(SOCKET))
 	    }
 	    memmove(
 		&src->fd_array[s],
-		&src->fd_array[s+1], 
+		&src->fd_array[s+1],
 		sizeof(src->fd_array[0]) * (--src->fd_count - s));
 	}
 	else s++;
@@ -2806,7 +2806,7 @@ rb_w32_send(int fd, const char *buf, int len, int flags)
 }
 
 int WSAAPI
-rb_w32_sendto(int fd, const char *buf, int len, int flags, 
+rb_w32_sendto(int fd, const char *buf, int len, int flags,
 	      const struct sockaddr *to, int tolen)
 {
     return overlapped_socket_io(FALSE, fd, (char *)buf, len, flags,
@@ -3036,7 +3036,7 @@ rb_w32_setsockopt(int s, int level, int optname, const char *optval, int optlen)
     });
     return r;
 }
-    
+
 #undef shutdown
 
 int WSAAPI
@@ -4266,7 +4266,7 @@ rb_w32_getc(FILE* stream)
     if (enough_to_get(stream->FILE_COUNT)) {
 	c = (unsigned char)*stream->FILE_READPTR++;
     }
-    else 
+    else
     {
 	c = _filbuf(stream);
 #if defined __BORLANDC__
@@ -4286,7 +4286,7 @@ rb_w32_putc(int c, FILE* stream)
     if (enough_to_put(stream->FILE_COUNT)) {
 	c = (unsigned char)(*stream->FILE_READPTR++ = (char)c);
     }
-    else 
+    else
     {
 	c = _flsbuf(c, stream);
 	catch_interrupt();

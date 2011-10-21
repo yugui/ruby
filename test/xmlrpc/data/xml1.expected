@@ -1,7 +1,7 @@
---- 
+---
 - true
-- 
-  - 
+-
+  -
     subscriber: MegaCorp
     lastName: Baker
     telephone1: 1-508-791-1267
@@ -11,7 +11,7 @@
     email: hbaker@yahoo.com
     adminId: hbaker
     objectName: AdministratorDO
-  - 
+  -
     subscriber: CornerStore
     lastName: Dragon
     telephone1: 1-781-789-9089
@@ -21,7 +21,7 @@
     email: adragon@yahoo.com
     adminId: adragon
     objectName: AdministratorDO
-  - 
+  -
     subscriber: Cyberdyne
     lastName: Rodman
     telephone1: 1-617-789-1890
@@ -31,7 +31,7 @@
     email: mrodman@yahoo.com
     adminId: mrodman
     objectName: AdministratorDO
-  - 
+  -
     subscriber: StarSports
     lastName: Jordan
     telephone1: 1-617-890-7897
@@ -41,7 +41,7 @@
     email: mjordan@yahoo.com
     adminId: mjordan
     objectName: AdministratorDO
-  - 
+  -
     subscriber: GreatBooks
     lastName: Pippen
     telephone1: 1-781-789-9876
@@ -51,7 +51,7 @@
     email: gpippen@yahoo.com
     adminId: gpippen
     objectName: AdministratorDO
-  - 
+  -
     subscriber: AxisChemicals
     lastName: Andhrew
     telephone1: 1-781-678-8970
@@ -61,7 +61,7 @@
     email: aandrew@yahoo.com
     adminId: aandrew
     objectName: AdministratorDO
-  - 
+  -
     subscriber: MediaShop
     lastName: Vincent
     telephone1: 1-786-897-8908
@@ -71,7 +71,7 @@
     email: tvincent@yahoo.com
     adminId: tvincent
     objectName: AdministratorDO
-  - 
+  -
     subscriber: SmartShop
     lastName: Richard
     telephone1: 1-508-789-6789
@@ -81,7 +81,7 @@
     email: krichard@yahoo.com
     adminId: krichard
     objectName: AdministratorDO
-  - 
+  -
     subscriber: HomeNeeds
     lastName: Cornell
     telephone1: 1-617-789-8979
@@ -91,7 +91,7 @@
     email: gconell@yahoo.com
     adminId: gcornell
     objectName: AdministratorDO
-  - 
+  -
     subscriber: MegaCorp
     lastName: HorstMann
     telephone1: 1-508-791-1267
@@ -101,7 +101,7 @@
     email: shorstmann@yahoo.com
     adminId: shorstmann
     objectName: AdministratorDO
-  - 
+  -
     subscriber: CornerStore
     lastName: Bob
     telephone1: 1-781-789-9089
@@ -111,7 +111,7 @@
     email: rbob@yahoo.com
     adminId: rbob
     objectName: AdministratorDO
-  - 
+  -
     subscriber: Cyberdyne
     lastName: Peter
     telephone1: 1-617-789-1890
@@ -121,7 +121,7 @@
     email: speter@yahoo.com
     adminId: speter
     objectName: AdministratorDO
-  - 
+  -
     subscriber: StarSports
     lastName: Novak
     telephone1: 1-617-890-7897
@@ -131,7 +131,7 @@
     email: pnovak@yahoo.com
     adminId: pnovak
     objectName: AdministratorDO
-  - 
+  -
     subscriber: GreatBooks
     lastName: Nancy
     telephone1: 1-781-789-9876
@@ -141,7 +141,7 @@
     email: pnancy@yahoo.com
     adminId: pnancy
     objectName: AdministratorDO
-  - 
+  -
     subscriber: AxisChemicals
     lastName: Michel
     telephone1: 1-781-678-8970
@@ -151,7 +151,7 @@
     email: hmichel@yahoo.com
     adminId: hmichel
     objectName: AdministratorDO
-  - 
+  -
     subscriber: MediaShop
     lastName: David
     telephone1: 1-786-897-8908
@@ -161,7 +161,7 @@
     email: kdavid@yahoo.com
     adminId: kdavid
     objectName: AdministratorDO
-  - 
+  -
     subscriber: SmartShop
     lastName: Valnoor
     telephone1: 1-508-789-6789
@@ -171,7 +171,7 @@
     email: pvalnoor@yahoo.com
     adminId: pvalnoor
     objectName: AdministratorDO
-  - 
+  -
     subscriber: HomeNeeds
     lastName: Smith
     telephone1: 1-617-789-8979
@@ -181,7 +181,7 @@
     email: wsmith@yahoo.com
     adminId: wsmith
     objectName: AdministratorDO
-  - 
+  -
     subscriber: MegaCorp
     lastName: Caral
     telephone1: 1-781-789-9876
@@ -191,7 +191,7 @@
     email: gcaral@yahoo.com
     adminId: gcaral
     objectName: AdministratorDO
-  - 
+  -
     subscriber: CornerStore
     lastName: Hillary
     telephone1: 1-786-897-8908
@@ -201,7 +201,7 @@
     email: phillary@yahoo.com
     adminId: phillary
     objectName: AdministratorDO
-  - 
+  -
     subscriber: Cyberdyne
     lastName: Philip
     telephone1: 1-508-789-6789
@@ -211,7 +211,7 @@
     email: bphilip@yahoo.com
     adminId: bphilip
     objectName: AdministratorDO
-  - 
+  -
     subscriber: StarSports
     lastName: Andrea
     telephone1: 1-617-789-8979
@@ -221,7 +221,7 @@
     email: sandrea@yahoo.com
     adminId: sandrea
     objectName: AdministratorDO
-  - 
+  -
     subscriber: s4
     lastName: "null"
     telephone1: "null"
@@ -231,7 +231,7 @@
     email: "null"
     adminId: s4
     objectName: AdministratorDO
-  - 
+  -
     subscriber: BigBank
     lastName: administrator
     telephone1: ''

@@ -232,7 +232,7 @@ rb_singleton_class_attached(VALUE klass, VALUE obj)
 
 
 
-#define METACLASS_OF(k) RBASIC(k)->klass    
+#define METACLASS_OF(k) RBASIC(k)->klass
 
 /*!
  * whether k is a meta^(n)-class of Class class
@@ -333,7 +333,7 @@ Init_class_hierarchy(void)
     rb_cModule = boot_defclass("Module", rb_cObject);
     rb_cClass =  boot_defclass("Class",  rb_cModule);
 
-    RBASIC(rb_cClass)->klass 
+    RBASIC(rb_cClass)->klass
 	= RBASIC(rb_cModule)->klass
 	= RBASIC(rb_cObject)->klass
 	= RBASIC(rb_cBasicObject)->klass
@@ -408,10 +408,10 @@ rb_class_inherited(VALUE super, VALUE klass)
 /*!
  * Defines a top-level class.
  * \param name   name of the class
- * \param super  a class from which the new class will derive. 
+ * \param super  a class from which the new class will derive.
  *               NULL means \c Object class.
  * \return the created class
- * \throw TypeError if the constant name \a name is already taken but 
+ * \throw TypeError if the constant name \a name is already taken but
  *                  the constant is not a \c Class.
  * \throw NameError if the class is already defined but the class can not
  *                  be reopened because its superclass is not \a super.
@@ -454,10 +454,10 @@ rb_define_class(const char *name, VALUE super)
  * Defines a class under the namespace of \a outer.
  * \param outer  a class which contains the new class.
  * \param name   name of the new class
- * \param super  a class from which the new class will derive. 
+ * \param super  a class from which the new class will derive.
  *               NULL means \c Object class.
  * \return the created class
- * \throw TypeError if the constant name \a name is already taken but 
+ * \throw TypeError if the constant name \a name is already taken but
  *                  the constant is not a \c Class.
  * \throw NameError if the class is already defined but the class can not
  *                  be reopened because its superclass is not \a super.
@@ -477,10 +477,10 @@ rb_define_class_under(VALUE outer, const char *name, VALUE super)
  * Defines a class under the namespace of \a outer.
  * \param outer  a class which contains the new class.
  * \param id     name of the new class
- * \param super  a class from which the new class will derive. 
+ * \param super  a class from which the new class will derive.
  *               NULL means \c Object class.
  * \return the created class
- * \throw TypeError if the constant name \a name is already taken but 
+ * \throw TypeError if the constant name \a name is already taken but
  *                  the constant is not a \c Class.
  * \throw NameError if the class is already defined but the class can not
  *                  be reopened because its superclass is not \a super.
@@ -1009,12 +1009,12 @@ rb_obj_singleton_methods(int argc, VALUE *argv, VALUE obj)
  * These API takes a C function as a method body.
  *
  * \par Method body functions
- * Method body functions must return a VALUE and 
+ * Method body functions must return a VALUE and
  * can be one of the following form:
  * <dl>
  * <dt>Fixed number of parameters</dt>
  * <dd>
- *     This form is a normal C function, excepting it takes 
+ *     This form is a normal C function, excepting it takes
  *     a receiver object as the first argument.
  *
  *     \code
@@ -1034,7 +1034,7 @@ rb_obj_singleton_methods(int argc, VALUE *argv, VALUE obj)
  * <dt>Ruby array style</dt>
  * <dd>
  *     This form takes two parameters: self and args.
- *     \a self is the receiver. \a args is an Array object which 
+ *     \a self is the receiver. \a args is an Array object which
  *     containts the arguments.
  *
  *     \code
@@ -1108,7 +1108,7 @@ rb_undef_method(VALUE klass, const char *name)
  *
  * \note DO NOT expose the returned singleton class to
  *       outside of class.c.
- *       Use \ref rb_singleton_class instead for 
+ *       Use \ref rb_singleton_class instead for
  *       consistency of the metaclass hierarchy.
  */
 static VALUE
@@ -1160,11 +1160,11 @@ singleton_class_of(VALUE obj)
  * \return the singleton class.
  *
  * \post \a obj has its own singleton class.
- * \post if \a obj is a class, 
- *       the returned singleton class also has its own 
+ * \post if \a obj is a class,
+ *       the returned singleton class also has its own
  *       singleton class in order to keep consistency of the
  *       inheritance structure of metaclasses.
- * \note a new singleton class will be created 
+ * \note a new singleton class will be created
  *       if \a obj does not have it.
  * \note the singleton classes for nil, true and false are:
  *       NilClass, TrueClass and FalseClass.
@@ -1175,7 +1175,7 @@ rb_singleton_class(VALUE obj)
     VALUE klass = singleton_class_of(obj);
 
     /* ensures an exposed class belongs to its own eigenclass */
-    if (TYPE(obj) == T_CLASS) ENSURE_EIGENCLASS(klass); 
+    if (TYPE(obj) == T_CLASS) ENSURE_EIGENCLASS(klass);
 
     return klass;
 }

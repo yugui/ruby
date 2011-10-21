@@ -1101,7 +1101,7 @@ class RubyLex
       @indent = 0
       @indent_stack = []
       @lex_state = EXPR_BEG
-      
+
       loop do
 	@continue = false
 	prompt
@@ -1120,7 +1120,7 @@ class RubyLex
       @quoted = reserve_quoted
     end
   end
-  
+
   def identify_comment
     @ltype = "#"
 

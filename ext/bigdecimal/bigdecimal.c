@@ -8,7 +8,7 @@
  * License or the Artistic License, as specified in the README file
  * of this BigDecimal distribution.
  *
- *  NOTE: Change log in this source removed to reduce source code size. 
+ *  NOTE: Change log in this source removed to reduce source code size.
  *        See rev. 1.25 if needed.
  *
  */
@@ -26,7 +26,7 @@
 #ifdef HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
- 
+
 /* #define ENABLE_NUMERIC_STRING */
 
 VALUE rb_cBigDecimal;
@@ -163,7 +163,7 @@ static U_LONG BASE1 = 1000L;    /* =BASE/10  */
  * Note that -0.0 and 0.0 are considered to be the same for the purposes of
  * comparison.
  *
- * Note also that in mathematics, there is no particular concept of negative 
+ * Note also that in mathematics, there is no particular concept of negative
  * or positive zero; true mathematical zero has no sign.
  */
 void
@@ -191,7 +191,7 @@ BigDecimal_version(VALUE self)
 }
 
 /*
- *   VP routines used in BigDecimal part 
+ *   VP routines used in BigDecimal part
  */
 static unsigned short VpGetException(void);
 static void  VpSetException(unsigned short f);
@@ -313,7 +313,7 @@ BigDecimal_double_fig(VALUE self)
  *
  * Returns an Array of two Integer values.
  *
- * The first value is the current number of significant digits in the 
+ * The first value is the current number of significant digits in the
  * BigDecimal. The second value is the maximum number of significant digits
  * for the BigDecimal.
  */
@@ -413,8 +413,8 @@ BigDecimal_load(VALUE self, VALUE str)
   * BigDecimal::EXCEPTION_ZERODIVIDE
   * BigDecimal::EXCEPTION_ALL
   *
-  * For each mode parameter above, if the value set is false, computation 
-  * continues after an arithmetic exception of the appropriate type. 
+  * For each mode parameter above, if the value set is false, computation
+  * continues after an arithmetic exception of the appropriate type.
   * When computation continues, results are as follows:
   *
   * EXCEPTION_NaN:: NaN
@@ -441,7 +441,7 @@ BigDecimal_mode(int argc, VALUE *argv, VALUE self)
     VALUE which;
     VALUE val;
     unsigned long f,fo;
- 
+
     if(rb_scan_args(argc,argv,"11",&which,&val)==1) val = Qnil;
 
     Check_Type(which, T_FIXNUM);
@@ -686,7 +686,7 @@ BigDecimal_to_r(VALUE self)
     digits = RARRAY_PTR(a)[1];
     denomi_power = power - RSTRING_LEN(digits);
     numerator = rb_funcall(digits, rb_intern("to_i"), 0);
-    
+
     if (sign < 0) {
 	numerator = rb_funcall(numerator, '*', 1, INT2FIX(-1));
     }
@@ -704,8 +704,8 @@ BigDecimal_to_r(VALUE self)
 
 /* The coerce method provides support for Ruby type coercion. It is not
  * enabled by default.
- * 
- * This means that binary operations like + * / or - can often be performed 
+ *
+ * This means that binary operations like + * / or - can often be performed
  * on a BigDecimal and an object of another type, if the other object can
  * be coerced into a BigDecimal value.
  *
@@ -745,7 +745,7 @@ BigDecimal_uplus(VALUE self)
  /* call-seq:
   * add(value, digits)
   *
-  * Add the specified value. 
+  * Add the specified value.
   *
   * e.g.
   *   c = a.add(b,n)
@@ -783,7 +783,7 @@ BigDecimal_add(VALUE self, VALUE r)
  /* call-seq:
   * sub(value, digits)
   *
-  * Subtract the specified value. 
+  * Subtract the specified value.
   *
   * e.g.
   *   c = a.sub(b,n)
@@ -887,7 +887,7 @@ BigDecimal_comp(VALUE self, VALUE r)
 /*
  * Tests for value equality; returns true if the values are equal.
  *
- * The == and === operators and the eql? method have the same implementation 
+ * The == and === operators and the eql? method have the same implementation
  * for BigDecimal.
  *
  * Values may be coerced to perform the comparison:
@@ -915,7 +915,7 @@ BigDecimal_lt(VALUE self, VALUE r)
 /* call-seq:
  * a <= b
  *
- * Returns true if a is less than or equal to b. Values may be coerced to 
+ * Returns true if a is less than or equal to b. Values may be coerced to
  * perform the comparison (see ==, coerce).
  */
 static VALUE
@@ -927,7 +927,7 @@ BigDecimal_le(VALUE self, VALUE r)
 /* call-seq:
  * a > b
  *
- * Returns true if a is greater than b.  Values may be coerced to 
+ * Returns true if a is greater than b.  Values may be coerced to
  * perform the comparison (see ==, coerce).
  */
 static VALUE
@@ -939,7 +939,7 @@ BigDecimal_gt(VALUE self, VALUE r)
 /* call-seq:
  * a >= b
  *
- * Returns true if a is greater than or equal to b. Values may be coerced to 
+ * Returns true if a is greater than or equal to b. Values may be coerced to
  * perform the comparison (see ==, coerce)
  */
 static VALUE
@@ -962,7 +962,7 @@ BigDecimal_neg(VALUE self)
  /* call-seq:
   * mult(value, digits)
   *
-  * Multiply by the specified value. 
+  * Multiply by the specified value.
   *
   * e.g.
   *   c = a.mult(b,n)
@@ -1012,13 +1012,13 @@ BigDecimal_divide(Real **c, Real **res, Real **div, VALUE self, VALUE r)
   * div(value, digits)
   * quo(value)
   *
-  * Divide by the specified value. 
+  * Divide by the specified value.
   *
   * e.g.
   *   c = a.div(b,n)
   *
   * digits:: If specified and less than the number of significant digits of the result, the result is rounded to that number of digits, according to BigDecimal.mode.
-  * 
+  *
   * If digits is 0, the result is the same as the / operator. If not, the
   * result is an integer BigDecimal, by analogy with Float#div.
   *
@@ -1191,7 +1191,7 @@ BigDecimal_remainder(VALUE self, VALUE r) /* remainder */
  *
  * a == c  -> true
  *
- * The quotient q is (a/b).floor, and the modulus is the amount that must be 
+ * The quotient q is (a/b).floor, and the modulus is the amount that must be
  * added to q * b to get a.
  */
 static VALUE
@@ -1366,7 +1366,7 @@ BigDecimal_fix(VALUE self)
  * BigDecimal('8.7').round -> 9
  *
  * If n is specified and positive, the fractional part of the result has no
- * more than that many digits. 
+ * more than that many digits.
  *
  * If n is specified and negative, at least that many digits to the left of the
  * decimal point will be 0 in the result.
@@ -1375,7 +1375,7 @@ BigDecimal_fix(VALUE self)
  *
  * BigDecimal('13345.234').round(-2) -> 13300.0
  *
- * The value of the optional mode argument can be used to determine how 
+ * The value of the optional mode argument can be used to determine how
  * rounding is performed; see BigDecimal.mode.
  */
 static VALUE
@@ -1434,7 +1434,7 @@ BigDecimal_round(int argc, VALUE *argv, VALUE self)
  * BigDecimal('8.7').truncate -> 8
  *
  * If n is specified and positive, the fractional part of the result has no
- * more than that many digits. 
+ * more than that many digits.
  *
  * If n is specified and negative, at least that many digits to the left of the
  * decimal point will be 0 in the result.
@@ -1497,7 +1497,7 @@ BigDecimal_frac(VALUE self)
  * BigDecimal('-9.1').floor -> -10
  *
  * If n is specified and positive, the fractional part of the result has no
- * more than that many digits.  
+ * more than that many digits.
  *
  * If n is specified and negative, at least that
  * many digits to the left of the decimal point will be 0 in the result.
@@ -1544,7 +1544,7 @@ BigDecimal_floor(int argc, VALUE *argv, VALUE self)
  * BigDecimal('-9.1').ceil -> -9
  *
  * If n is specified and positive, the fractional part of the result has no
- * more than that many digits.  
+ * more than that many digits.
  *
  * If n is specified and negative, at least that
  * many digits to the left of the decimal point will be 0 in the result.
@@ -1596,7 +1596,7 @@ BigDecimal_ceil(int argc, VALUE *argv, VALUE self)
  *
  * A space at the start of s returns positive values with a leading space.
  *
- * If s contains a number, a space is inserted after each group of that many 
+ * If s contains a number, a space is inserted after each group of that many
  * fractional digits.
  *
  * If s ends with an 'E', engineering notation (0.xxxxEnn) is used.
@@ -1626,7 +1626,7 @@ BigDecimal_to_s(int argc, VALUE *argv, VALUE self)
     VALUE  f;
 
     GUARD_OBJ(vp,GetVpValue(self,1));
-    
+
     if(rb_scan_args(argc,argv,"01",&f)==1) {
         if(TYPE(f)==T_STRING) {
             SafeStringValue(f);
@@ -1680,7 +1680,7 @@ BigDecimal_to_s(int argc, VALUE *argv, VALUE self)
  *
  * The fourth value is an Integer exponent.
  *
- * If the BigDecimal can be represented as 0.xxxxxx*10**n, then xxxxxx is the 
+ * If the BigDecimal can be represented as 0.xxxxxx*10**n, then xxxxxx is the
  * string of significant digits with no leading zeros, and n is the exponent.
  *
  * From these values, you can translate a BigDecimal to a float as follows:
@@ -1688,7 +1688,7 @@ BigDecimal_to_s(int argc, VALUE *argv, VALUE self)
  *   sign, significant_digits, base, exponent = a.split
  *   f = sign * "0.#{significant_digits}".to_f * (base ** exponent)
  *
- * (Note that the to_f method is provided as a more convenient way to translate 
+ * (Note that the to_f method is provided as a more convenient way to translate
  * a BigDecimal to a Float.)
  */
 static VALUE
@@ -1854,13 +1854,13 @@ BigDecimal_new(int argc, VALUE *argv, VALUE self)
  /* call-seq:
   * BigDecimal.limit(digits)
   *
-  * Limit the number of significant digits in newly created BigDecimal 
-  * numbers to the specified value. Rounding is performed as necessary, 
+  * Limit the number of significant digits in newly created BigDecimal
+  * numbers to the specified value. Rounding is performed as necessary,
   * as specified by BigDecimal.mode.
   *
   * A limit of 0, the default, means no upper limit.
   *
-  * The limit specified by this method takes less priority over any limit 
+  * The limit specified by this method takes less priority over any limit
   * specified to instance methods such as ceil, floor, truncate, or round.
   */
 static VALUE
@@ -1884,10 +1884,10 @@ BigDecimal_limit(int argc, VALUE *argv, VALUE self)
 
 /* Returns the sign of the value.
  *
- * Returns a positive value if > 0, a negative value if < 0, and a 
+ * Returns a positive value if > 0, a negative value if < 0, and a
  * zero if == 0.
  *
- * The specific value returned indicates the type and sign of the BigDecimal, 
+ * The specific value returned indicates the type and sign of the BigDecimal,
  * as follows:
  *
  * BigDecimal::SIGN_NaN:: value is Not a Number
@@ -1927,54 +1927,54 @@ Init_bigdecimal(void)
 
     /* Constants definition */
 
-    /* 
-     * Base value used in internal calculations.  On a 32 bit system, BASE 
-     * is 10000, indicating that calculation is done in groups of 4 digits.  
+    /*
+     * Base value used in internal calculations.  On a 32 bit system, BASE
+     * is 10000, indicating that calculation is done in groups of 4 digits.
      * (If it were larger, BASE**2 wouldn't fit in 32 bits, so you couldn't
-     * guarantee that two groups could always be multiplied together without 
-     * overflow.) 
+     * guarantee that two groups could always be multiplied together without
+     * overflow.)
      */
     rb_define_const(rb_cBigDecimal, "BASE", INT2FIX((S_INT)VpBaseVal()));
 
     /* Exceptions */
 
     /*
-     * 0xff: Determines whether overflow, underflow or zero divide result in 
+     * 0xff: Determines whether overflow, underflow or zero divide result in
      * an exception being thrown. See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_ALL",INT2FIX(VP_EXCEPTION_ALL));
 
-    /* 
-     * 0x02: Determines what happens when the result of a computation is not a 
-     * number (NaN). See BigDecimal.mode. 
+    /*
+     * 0x02: Determines what happens when the result of a computation is not a
+     * number (NaN). See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_NaN",INT2FIX(VP_EXCEPTION_NaN));
 
-    /* 
+    /*
      * 0x01: Determines what happens when the result of a computation is
      * infinity.  See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_INFINITY",INT2FIX(VP_EXCEPTION_INFINITY));
 
-    /* 
+    /*
      * 0x04: Determines what happens when the result of a computation is an
      * underflow (a result too small to be represented). See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_UNDERFLOW",INT2FIX(VP_EXCEPTION_UNDERFLOW));
 
-    /* 
+    /*
      * 0x01: Determines what happens when the result of a computation is an
      * overflow (a result too large to be represented). See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_OVERFLOW",INT2FIX(VP_EXCEPTION_OVERFLOW));
 
-    /* 
+    /*
      * 0x01: Determines what happens when a division by zero is performed.
      * See BigDecimal.mode.
      */
     rb_define_const(rb_cBigDecimal, "EXCEPTION_ZERODIVIDE",INT2FIX(VP_EXCEPTION_ZERODIVIDE));
 
-    /* 
+    /*
      * 0x100: Determines what happens when a result must be rounded in order to
      * fit in the appropriate number of significant digits. See
      * BigDecimal.mode.
@@ -4579,7 +4579,7 @@ VpLeftRound(Real *y, int f, int nf)
     return VpMidRound(y,f,nf);
 }
 
-VP_EXPORT int 
+VP_EXPORT int
 VpActiveRound(Real *y, Real *x, int f, int nf)
 {
     /* First,assign whole value in truncation mode */
@@ -4598,7 +4598,7 @@ VpLimitRound(Real *c,U_LONG ixDigit)
     return VpLeftRound(c,VpGetRoundMode(),ix);
 }
 
-static void 
+static void
 VpInternalRound(Real *c,int ixDigit,U_LONG vPrev,U_LONG v)
 {
     int f = 0;

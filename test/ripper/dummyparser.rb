@@ -128,44 +128,44 @@ class DummyParser < Ripper
     on_args_add_block(m.children, b)
     m
   end
-  
+
   def on_paren(params)
     params
   end
-  
+
   def on_brace_block(params, code)
     Node.new('block', params, code)
   end
-  
+
   def on_block_var(params, shadow)
     params
   end
-  
+
   def on_rest_param(var)
     "*#{var}"
   end
-  
+
   def on_blockarg(var)
     "&#{var}"
   end
-  
+
   def on_params(required, optional, rest, more, block)
     args = NodeList.new
-    
+
     required.each do |req|
       args.push(req)
     end if required
-    
+
     optional.each do |var, val|
       args.push("#{var}=#{val}")
     end if optional
-    
+
     args.push(rest) if rest
-    
+
     more.each do |m|
       args.push(m)
     end if more
-    
+
     args.push(block) if block
     args
   end

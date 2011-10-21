@@ -32,7 +32,7 @@ Module Function:
 	    age		# password age(integer)
 	    class	# user access class(string)
 	    comment	# comment(string)
-	    expire	# account expiration time(integer)	    
+	    expire	# account expiration time(integer)
 	  end
 
 	See getpwnam(3) for detail.
