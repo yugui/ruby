@@ -2388,11 +2388,9 @@ if test "${TRACING_MODEL}" = "auto"; then
     fi
 fi
 
-case "${TRACING_MODEL}" in
-    when(none)
-        AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_NONE, [none])
-        ;;
-    when(dtrace)
+AS_CASE(["${TRACING_MODEL}"],
+  [none], [ AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_NONE, [none]) ],
+  [dtrace], [
         if test -z "$DTRACE"; then
             AC_MSG_ERROR([dtrace(1) is missing])
         elif test "$cross_compiling" = yes; then
@@ -2412,11 +2410,10 @@ case "${TRACING_MODEL}" in
         AC_SUBST(MINIDTRACE_OBJ)
         AC_SUBST(GOLFDTRACE_OBJ)
         AC_SUBST(LIBRUBY_DTRACE_OBJ)
-        ;;
-    when(*)
+	]
+  [*], [
         AC_MSG_ERROR([unknown tracing model: ${TRACING_MODEL}])
-        ;;
-esac
+	])
 AC_SUBST(TRACING_MODEL)
 
 AC_ARG_WITH(soname,
