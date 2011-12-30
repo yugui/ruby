@@ -2199,6 +2199,7 @@ Init_BareVM(void)
     rb_thread_t * th = malloc(sizeof(*th));
     if (!vm || !th) {
 	fprintf(stderr, "[FATAL] failed to allocate memory\n");
+        if (TRACE_RAISE_ENABLED()) FIRE_RAISE_FATAL();
 	exit(EXIT_FAILURE);
     }
     MEMZERO(th, rb_thread_t, 1);

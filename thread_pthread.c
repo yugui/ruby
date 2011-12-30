@@ -969,6 +969,7 @@ add_signal_thread_list(rb_thread_t *th)
 
 	    if (list == 0) {
 		fprintf(stderr, "[FATAL] failed to allocate memory\n");
+                if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 		exit(EXIT_FAILURE);
 	    }
 
@@ -1249,6 +1250,7 @@ rb_thread_create_timer_thread(void)
 	err = pthread_create(&timer_thread_id, &attr, thread_timer, &GET_VM()->gvl);
 	if (err != 0) {
 	    fprintf(stderr, "[FATAL] Failed to create timer thread (errno: %d)\n", err);
+            if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 	    exit(EXIT_FAILURE);
 	}
 	pthread_attr_destroy(&attr);

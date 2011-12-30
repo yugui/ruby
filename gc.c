@@ -561,6 +561,7 @@ ruby_memerror(void)
 	else {
 	    /* no ruby thread */
 	    fprintf(stderr, "[FATAL] failed to allocate memory\n");
+            if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 	    exit(EXIT_FAILURE);
 	}
     }
@@ -573,6 +574,7 @@ rb_memerror(void)
     if (!nomem_error ||
 	(rb_thread_raised_p(th, RAISED_NOMEMORY) && rb_safe_level() < 4)) {
 	fprintf(stderr, "[FATAL] failed to allocate memory\n");
+        if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 	exit(EXIT_FAILURE);
     }
     if (rb_thread_raised_p(th, RAISED_NOMEMORY)) {
@@ -703,6 +705,7 @@ negative_size_allocation_error(const char *msg)
 	}
 	else {
 	    fprintf(stderr, "[FATAL] %s\n", msg);
+            if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 	    exit(EXIT_FAILURE);
 	}
     }
@@ -728,6 +731,7 @@ garbage_collect_with_gvl(rb_objspace_t *objspace)
 	else {
 	    /* no ruby thread */
 	    fprintf(stderr, "[FATAL] failed to allocate memory\n");
+            if (UNLIKELY(TRACE_RAISE_ENABLED())) FIRE_RAISE_FATAL();
 	    exit(EXIT_FAILURE);
 	}
     }
@@ -2299,6 +2303,8 @@ obj_free(rb_objspace_t *objspace, VALUE obj)
 	break;
     }
 
+    if (TRACE_OBJECT_FREE_ENABLED()) FIRE_OBJECT_FREE(rb_obj_id(obj));
+
     if (FL_TEST(obj, FL_EXIVAR)) {
 	rb_free_generic_ivar((VALUE)obj);
 	FL_UNSET(obj, FL_EXIVAR);
@@ -2489,6 +2495,7 @@ gc_marks(rb_objspace_t *objspace)
 {
     struct gc_list *list;
     rb_thread_t *th = GET_THREAD();
+    if (TRACE_GC_BEGIN_ENABLED()) FIRE_GC_BEGIN();
     GC_PROF_MARK_TIMER_START;
 
     objspace->heap.live_num = 0;
@@ -2561,6 +2568,7 @@ garbage_collect(rb_objspace_t *objspace)
     GC_PROF_SWEEP_TIMER_STOP;
 
     GC_PROF_TIMER_STOP(Qtrue);
+    if (TRACE_GC_END_ENABLED()) FIRE_GC_END();
     if (GC_NOTIFY) printf("end garbage_collect()\n");
     return TRUE;
 }

@@ -184,11 +184,11 @@ loadpath: $(PREP) PHONY
 
 $(PREP): $(MKFILES)
 
-miniruby$(EXEEXT): config.status $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(ARCHFILE)
+miniruby$(EXEEXT): config.status $(NORMALMAINOBJ) $(MINIOBJS) $(COMMONOBJS) $(DMYEXT) $(ARCHFILE) $(MINIDTRACE_OBJ)
 
 GORUBY = go$(RUBY_INSTALL_NAME)
-golf: $(LIBRUBY) $(GOLFOBJS) PHONY
-	$(Q) $(MAKE) $(MFLAGS) MAINOBJ="$(GOLFOBJS)" PROGRAM=$(GORUBY)$(EXEEXT) program
+golf: $(LIBRUBY) $(GOLFOBJS) $(GOLFDTRACE_OBJ) PHONY
+	$(Q) $(MAKE) $(MFLAGS) MAINOBJ="$(GOLFOBJS)" DTRACE_OBJ="$(GOLFDTRACE_OBJ)" PROGRAM=$(GORUBY)$(EXEEXT) program
 capi: $(CAPIOUT)/.timestamp PHONY
 
 doc/capi/.timestamp: Doxyfile $(PREP)
@@ -205,9 +205,9 @@ Doxyfile: $(srcdir)/template/Doxyfile.tmpl $(PREP) $(srcdir)/tool/generic_erb.rb
 program: showflags $(PROGRAM)
 wprogram: showflags $(WPROGRAM)
 
-$(PROGRAM): $(LIBRUBY) $(MAINOBJ) $(OBJS) $(EXTOBJS) $(SETUP) $(PREP)
+$(PROGRAM): $(LIBRUBY) $(MAINOBJ) $(OBJS) $(EXTOBJS) $(DTRACE_OBJ) $(SETUP) $(PREP)
 
-$(LIBRUBY_A):	$(OBJS) $(MAINOBJ) $(DMYEXT) $(ARCHFILE)
+$(LIBRUBY_A):	$(OBJS) $(MAINOBJ) $(DMYEXT) $(LIBRUBY_DTRACE_OBJ) $(ARCHFILE)
 
 $(LIBRUBY_SO):	$(OBJS) $(DLDOBJS) $(LIBRUBY_A) $(PREP) $(LIBRUBY_SO_UPDATE) $(BUILTIN_ENCOBJS)
 
@@ -441,6 +441,7 @@ distclean: distclean-ext distclean-local distclean-enc distclean-golf distclean-
 distclean-local:: clean-local
 	@$(RM) $(MKFILES) yasmdata.rb *.inc
 	@$(RM) config.cache config.status config.status.lineno $(PRELUDES)
+	@$(RM) $(arch_hdrdir)/ruby/dtrace.d
 	@$(RM) *~ *.bak *.stackdump core *.core gmon.out $(PREP)
 distclean-ext:: PHONY
 distclean-golf: clean-golf
@@ -578,7 +579,8 @@ win32.$(OBJEXT): {$(VPATH)}win32.c $(RUBY_H_INCLUDES)
 
 RUBY_H_INCLUDES    = {$(VPATH)}ruby.h {$(VPATH)}config.h {$(VPATH)}defines.h \
 		     {$(VPATH)}intern.h {$(VPATH)}missing.h {$(VPATH)}st.h \
-		     {$(VPATH)}subst.h
+		     {$(VPATH)}subst.h \
+		     {$(VPATH)}trace.h {$(VPATH)}trace_$(TRACING_MODEL).h
 ENCODING_H_INCLUDES= {$(VPATH)}encoding.h {$(VPATH)}oniguruma.h
 ID_H_INCLUDES      = {$(VPATH)}id.h {$(VPATH)}vm_opts.h
 VM_CORE_H_INCLUDES = {$(VPATH)}vm_core.h {$(VPATH)}thread_$(THREAD_MODEL).h \
@@ -768,6 +770,9 @@ newline.$(OBJEXT): {$(VPATH)}newline.c {$(VPATH)}defines.h \
   {$(VPATH)}transcode_data.h {$(VPATH)}ruby.h {$(VPATH)}config.h {$(VPATH)}subst.h
 
 $(OBJS):  {$(VPATH)}config.h {$(VPATH)}missing.h
+
+trace_none.h:
+	echo > $@
 
 INSNS2VMOPT = --srcdir="$(srcdir)"
 
