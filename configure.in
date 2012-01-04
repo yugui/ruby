@@ -379,6 +379,7 @@ AC_CHECK_PROG(DOXYGEN, doxygen)
 
 AC_CHECK_PROG(PKG_CONFIG, pkg-config, [], [], [],
     [`$as_dir/$ac_word$ac_exec_ext --print-errors --version > /dev/null 2>&1 || continue`])
+# gcc on Mac OS X does not need post-processing, but BSD or Solaris needs.
 AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
 [AC_CACHE_CHECK(whether $DTRACE needs post processing, rb_cv_prog_dtrace_g,
 [
@@ -396,6 +397,7 @@ AC_DEFUN([RUBY_DTRACE_POSTPROCESS],
 ])
 ])
 
+# User space tracing is broken on some versions of FreeBSD.
 AC_DEFUN([RUBY_DTRACE_BSD_BROKEN],
 [AC_CACHE_CHECK(whether dtrace USDT is broken, rb_cv_dtrace_bsd_broken,
 [
@@ -1182,7 +1184,7 @@ AC_CHECK_HEADERS(limits.h sys/file.h sys/ioctl.h sys/syscall.h\
 		 syscall.h pwd.h grp.h a.out.h utime.h direct.h sys/resource.h \
 		 sys/mkdev.h sys/utime.h xti.h netinet/in_systm.h float.h ieeefp.h \
 		 ucontext.h intrinsics.h langinfo.h locale.h sys/sendfile.h time.h \
-		 net/socket.h sys/socket.h process.h sys/prctl.h)
+		 net/socket.h sys/socket.h process.h sys/prctl.h sys/sdt.h)
 
 AC_TYPE_SIZE_T
 RUBY_CHECK_SIZEOF(size_t, [int long void*], [], [@%:@include <sys/types.h>])
@@ -2372,7 +2374,7 @@ AS_CASE(["$target_os"],
     ])
 
 AC_ARG_WITH(tracing-model,
-            AS_HELP_STRING([--with-tracing-model=MODEL], [use MODEL for tracing ruby's internal. [[auto]] (none|dtrace|auto)]),
+            AS_HELP_STRING([--with-tracing-model=MODEL], [use MODEL for tracing ruby's internal. [[auto]] (none|dtrace|systemtap|auto)]),
             [TRACING_MODEL=$withval], [TRACING_MODEL=auto])
 
 if test "${TRACING_MODEL}" = "auto"; then
@@ -2383,6 +2385,8 @@ if test "${TRACING_MODEL}" = "auto"; then
         else
             TRACING_MODEL=dtrace
         fi
+    elif test x"$SYSTEMTAP" != x; then
+        TRACING_MODEL=systemtap
     else
         TRACING_MODEL=none
     fi
@@ -2390,7 +2394,7 @@ fi
 
 AS_CASE(["${TRACING_MODEL}"],
   [none], [ AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_NONE, [none]) ],
-  [dtrace], [
+  [dtrace|systemtap], [
         if test -z "$DTRACE"; then
             AC_MSG_ERROR([dtrace(1) is missing])
         elif test "$cross_compiling" = yes; then
@@ -2405,15 +2409,19 @@ AS_CASE(["${TRACING_MODEL}"],
                 LIBRUBY_DTRACE_OBJ='libruby_dtrace.$(OBJEXT)'
             fi
         fi
+        AS_CASE(["$target_os"],
+          [linux*], [
+           test x"$ac_cv_header_sys_sdt_h" = xyes || AC_MSG_ERROR([systemtap requires sys/sdt.h])
+          ])
         AC_DEFINE(RUBY_TRACING_MODEL, RUBY_TRACING_MODEL_DTRACE, [dtrace])
         AC_SUBST(DTRACE_OBJ)
         AC_SUBST(MINIDTRACE_OBJ)
         AC_SUBST(GOLFDTRACE_OBJ)
         AC_SUBST(LIBRUBY_DTRACE_OBJ)
-	]
-  [*], [
+        ],
+  [
         AC_MSG_ERROR([unknown tracing model: ${TRACING_MODEL}])
-	])
+        ])
 AC_SUBST(TRACING_MODEL)
 
 AC_ARG_WITH(soname,

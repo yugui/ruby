@@ -2051,7 +2051,8 @@ static: $(STATIC_LIB)#{$extout ? " install-rb" : ""}
 
     if $dtrace_postprocess 
       mfile.print "$(DTRACE_OBJ): $(OBJS)\n"
-      mfile.print "\t$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/dtrace.d $(OBJS)\n"
+      mfile.print "\t$(ECHO) generating $@\n"
+      mfile.print "\t$(Q) $(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/probes.d $(OBJS)\n"
     end
 
     fsep = config_string('BUILD_FILE_SEPARATOR') {|s| s unless s == "/"}
@@ -2195,7 +2196,7 @@ site-install-rb: install-rb
       end
       headers << $config_h
       headers << '$(RUBY_EXTCONF_H)' if $extconf_h
-      headers << '$(arch_hdrdir)/ruby/dtrace.d' if $dtrace_postprocess
+      headers << '$(arch_hdrdir)/ruby/probes.d' if $dtrace_postprocess
       mfile.print "$(OBJS): ", headers.join(' '), "\n"
     end
 
