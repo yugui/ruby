@@ -209,7 +209,8 @@ $(LIBRUBY_SO):
 				$(LIBRUBY_ALIASES) || true
 
 $(LIBRUBY_DTRACE_OBJ): $(arch_hdrdir)/ruby/probes.d $(OBJS) $(DMYEXT)
-		$(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/probes.d $(OBJS) $(DMYEXT)
+		$(ECHO) generating $@
+		$(Q) $(DTRACE) -G -o $@ -s $(arch_hdrdir)/ruby/probes.d $(OBJS) $(DMYEXT)
 
 fake: $(arch)-fake.rb
 $(arch)-fake.rb: config.status $(srcdir)/template/fake.rb.in
