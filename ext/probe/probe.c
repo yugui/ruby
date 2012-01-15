@@ -41,7 +41,7 @@ probe_fire(int argc, VALUE *argv, VALUE klass)
     return ret;
 }
 
-void Init_Probe()
+void Init_probe()
 {
     rb_define_global_function("fire_probe", probe_fire, -1);
 }
