@@ -845,6 +845,9 @@ SRC
     MakeMakefile.rm_f "#{CONFTEST}*"
   end
 
+  # Invokes a installation as defined in +ifiles+. 
+  #
+  # [+ifiles+] a sequence of triples. Each tribles concists of
   def install_files(mfile, ifiles, map = nil, srcprefix = nil)
     ifiles or return
     ifiles.empty? and return
@@ -892,13 +895,27 @@ SRC
     install_files(mfile, [["lib/**/*.rb", dest, "lib"]], nil, srcdir)
   end
 
+  # Appends a new entry to the list of libraries to be linked with your extension.
+  #
+  # Returns a new list with the new entry.
+  #
+  # [+libs+] a String which represents the current list of libraries to be linked.
+  # [+lib+] a String which is the name of the library to be added to +libs+.
   def append_library(libs, lib) # :no-doc:
     format(LIBARG, lib) + " " + libs
   end
 
-  def message(*s)
-    unless Logging.quiet and not $VERBOSE
-      printf(*s)
+  # Logs the given message.
+  # Formats the arguments with the printf-style.
+  #
+  # It does nothing if Logging.quiet is true.
+  # But $VERBOSE overwrites Logging.quiet.
+  #
+  # [+fmt+] a String. printf-style format string
+  # [+args+] a list of arguments to the format
+  def message(fmt, *args)
+    if !Logging.quiet or $VERBOSE
+      printf(fmt, *args)
       $stdout.flush
     end
   end
@@ -923,6 +940,16 @@ SRC
     r
   end
 
+  # Used by +have_macro+, +have_library+ and others
+  #
+  # Returns a string "checking xxx" for the arguments.
+  #
+  # [+target+] a String, name of the target being checked.
+  #            e.g. a macro name or a library name.
+  # [+place+] a String, an Array of String or anything else where the +target+ is being checked.
+  #           e.g. a list of headers in which the target macro is checked if defined.
+  # [+opt+] a String, an Array of String or anything else which is additional context of the check.
+  #         e.g. linker flag for checking if presense of a library.
   def checking_message(target, place = nil, opt = nil)
     [["in", place], ["with", opt]].inject("#{target}") do |msg, (pre, noun)|
       if noun
