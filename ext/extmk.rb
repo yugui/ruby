@@ -44,12 +44,11 @@ $" << "mkmf.rb"
 load File.expand_path("lib/mkmf.rb", srcdir)
 require 'optparse/shellwords'
 
-=begin
 class MakefileParser
+  include ExtmkHelper
   def initialize
   end
-
-  def parse(fname, keep = true)
+  def parse(makefile, keep = true)
     m = File.read(makefile)
     target = m[/^TARGET[ \t]*=[ \t]*(\S*)/, 1]
     return keep unless target
@@ -58,10 +57,6 @@ class MakefileParser
     m.scan(/^install-rb-default:.*[ \t](\S+)(?:[ \t].*)?\n\1:[ \t]*(\S+)/) {installrb[$2] = $1}
     oldrb = installrb.keys.sort
     newrb = install_rb(nil, "").collect {|d, *f| f}.flatten.sort
-
-    if target_prefix = m[/^target_prefix[ \t]*=[ \t]*\/(.*)/, 1]
-      target = "#{target_prefix}/#{target}"
-    end
     unless oldrb == newrb
       if $extout
         newrb.each {|f| installrb.delete(f)}
@@ -102,7 +97,6 @@ class MakefileParser
     true
   end
 end
-=end
 
 def extmake(target)
   unless $configure_only || verbose?
@@ -170,7 +164,7 @@ def extmake(target)
       }
       begin
 	$extconf_h = nil
-	ok &&= extract_makefile(makefile)
+        ok &&= MakefileParser.new.parse(makefile)
 	old_objs = $objs
 	old_cleanfiles = $distcleanfiles
 	conf = ["#{$srcdir}/makefile.rb", "#{$srcdir}/extconf.rb"].find {|f| File.exist?(f)}
