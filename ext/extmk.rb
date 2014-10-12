@@ -1,6 +1,9 @@
 #! /usr/local/bin/ruby
 # -*- mode: ruby; coding: us-ascii -*-
 
+require_relative 'extmk-helper'
+include ExtmkHelper
+
 # :stopdoc:
 $extension = nil
 $extstatic = nil
@@ -27,8 +30,6 @@ alias $0 $progname
 $extlist = []
 $compiled = {}
 
-DUMMY_SIGNATURE = "***DUMMY MAKEFILE***"
-
 srcdir = File.dirname(File.dirname(__FILE__))
 unless defined?(CROSS_COMPILING) and CROSS_COMPILING
   $:.replace([File.expand_path("lib", srcdir), Dir.pwd])
@@ -43,95 +44,65 @@ $" << "mkmf.rb"
 load File.expand_path("lib/mkmf.rb", srcdir)
 require 'optparse/shellwords'
 
-if defined?(File::NULL)
-  @null = File::NULL
-elsif !File.chardev?(@null = "/dev/null")
-  @null = "nul"
-end
+=begin
+class MakefileParser
+  def initialize
+  end
 
-def sysquote(x)
-  @quote ||= /os2/ =~ (CROSS_COMPILING || RUBY_PLATFORM)
-  @quote ? x.quote : x
-end
+  def parse(fname, keep = true)
+    m = File.read(makefile)
+    target = m[/^TARGET[ \t]*=[ \t]*(\S*)/, 1]
+    return keep unless target
 
-def verbose?
-  $mflags.defined?("V") == "1"
-end
+    installrb = {}
+    m.scan(/^install-rb-default:.*[ \t](\S+)(?:[ \t].*)?\n\1:[ \t]*(\S+)/) {installrb[$2] = $1}
+    oldrb = installrb.keys.sort
+    newrb = install_rb(nil, "").collect {|d, *f| f}.flatten.sort
 
-def system(*args)
-  if verbose?
-    if args.size == 1
-      puts args
-    else
-      puts Shellwords.join(args)
+    if target_prefix = m[/^target_prefix[ \t]*=[ \t]*\/(.*)/, 1]
+      target = "#{target_prefix}/#{target}"
     end
-  end
-  super
-end
-
-def atomic_write_open(filename)
-  filename_new = filename + ".new.#$$"
-  open(filename_new, "wb") do |f|
-    yield f
-  end
-  if File.binread(filename_new) != (File.binread(filename) rescue nil)
-    File.rename(filename_new, filename)
-  else
-    File.unlink(filename_new)
-  end
-end
-
-def extract_makefile(makefile, keep = true)
-  m = File.read(makefile)
-  if !(target = m[/^TARGET[ \t]*=[ \t]*(\S*)/, 1])
-    return keep
-  end
-  installrb = {}
-  m.scan(/^install-rb-default:.*[ \t](\S+)(?:[ \t].*)?\n\1:[ \t]*(\S+)/) {installrb[$2] = $1}
-  oldrb = installrb.keys.sort
-  newrb = install_rb(nil, "").collect {|d, *f| f}.flatten.sort
-  if target_prefix = m[/^target_prefix[ \t]*=[ \t]*\/(.*)/, 1]
-    target = "#{target_prefix}/#{target}"
-  end
-  unless oldrb == newrb
-    if $extout
-      newrb.each {|f| installrb.delete(f)}
-      unless installrb.empty?
-        config = CONFIG.dup
-        install_dirs(target_prefix).each {|var, val| config[var] = val}
-        FileUtils.rm_f(installrb.values.collect {|f| RbConfig.expand(f, config)},
-                       :verbose => verbose?)
+    unless oldrb == newrb
+      if $extout
+        newrb.each {|f| installrb.delete(f)}
+        unless installrb.empty?
+          config = CONFIG.dup
+          install_dirs(target_prefix).each {|var, val| config[var] = val}
+          FileUtils.rm_f(installrb.values.collect {|f| RbConfig.expand(f, config)},
+                         :verbose => verbose?)
+        end
       end
+      return false
     end
-    return false
+    srcs = Dir[File.join($srcdir, "*.{#{SRC_EXT.join(%q{,})}}")].map {|fn| File.basename(fn)}.sort
+    if !srcs.empty?
+      old_srcs = m[/^ORIG_SRCS[ \t]*=[ \t](.*)/, 1] or return false
+      old_srcs.split.sort == srcs or return false
+    end
+    $target = target
+    $extconf_h = m[/^RUBY_EXTCONF_H[ \t]*=[ \t]*(\S+)/, 1]
+    if $static.nil?
+      $static ||= m[/^EXTSTATIC[ \t]*=[ \t]*(\S+)/, 1] || false
+      /^STATIC_LIB[ \t]*=[ \t]*\S+/ =~ m or $static = false
+    end
+    $preload = Shellwords.shellwords(m[/^preload[ \t]*=[ \t]*(.*)/, 1] || "")
+    if dldflags = m[/^dldflags[ \t]*=[ \t]*(.*)/, 1] and !$DLDFLAGS.include?(dldflags)
+      $DLDFLAGS += " " + dldflags
+    end
+    if s = m[/^LIBS[ \t]*=[ \t]*(.*)/, 1]
+      s.sub!(/^#{Regexp.quote($LIBRUBYARG)} */, "")
+      s.sub!(/ *#{Regexp.quote($LIBS)}$/, "")
+        $libs = s
+    end
+    $objs = (m[/^OBJS[ \t]*=[ \t](.*)/, 1] || "").split
+    $srcs = (m[/^SRCS[ \t]*=[ \t](.*)/, 1] || "").split
+    $distcleanfiles = (m[/^DISTCLEANFILES[ \t]*=[ \t](.*)/, 1] || "").split
+    $LOCAL_LIBS = m[/^LOCAL_LIBS[ \t]*=[ \t]*(.*)/, 1] || ""
+    $LIBPATH = Shellwords.shellwords(m[/^libpath[ \t]*=[ \t]*(.*)/, 1] || "") - %w[$(libdir) $(topdir)]
+    true
   end
-  srcs = Dir[File.join($srcdir, "*.{#{SRC_EXT.join(%q{,})}}")].map {|fn| File.basename(fn)}.sort
-  if !srcs.empty?
-    old_srcs = m[/^ORIG_SRCS[ \t]*=[ \t](.*)/, 1] or return false
-    old_srcs.split.sort == srcs or return false
-  end
-  $target = target
-  $extconf_h = m[/^RUBY_EXTCONF_H[ \t]*=[ \t]*(\S+)/, 1]
-  if $static.nil?
-    $static ||= m[/^EXTSTATIC[ \t]*=[ \t]*(\S+)/, 1] || false
-    /^STATIC_LIB[ \t]*=[ \t]*\S+/ =~ m or $static = false
-  end
-  $preload = Shellwords.shellwords(m[/^preload[ \t]*=[ \t]*(.*)/, 1] || "")
-  if dldflags = m[/^dldflags[ \t]*=[ \t]*(.*)/, 1] and !$DLDFLAGS.include?(dldflags)
-    $DLDFLAGS += " " + dldflags
-  end
-  if s = m[/^LIBS[ \t]*=[ \t]*(.*)/, 1]
-    s.sub!(/^#{Regexp.quote($LIBRUBYARG)} */, "")
-    s.sub!(/ *#{Regexp.quote($LIBS)}$/, "")
-    $libs = s
-  end
-  $objs = (m[/^OBJS[ \t]*=[ \t](.*)/, 1] || "").split
-  $srcs = (m[/^SRCS[ \t]*=[ \t](.*)/, 1] || "").split
-  $distcleanfiles = (m[/^DISTCLEANFILES[ \t]*=[ \t](.*)/, 1] || "").split
-  $LOCAL_LIBS = m[/^LOCAL_LIBS[ \t]*=[ \t]*(.*)/, 1] || ""
-  $LIBPATH = Shellwords.shellwords(m[/^libpath[ \t]*=[ \t]*(.*)/, 1] || "") - %w[$(libdir) $(topdir)]
-  true
 end
+=end
 
 def extmake(target)
   unless $configure_only || verbose?
