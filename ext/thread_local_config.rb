@@ -1,9 +1,30 @@
+require 'forwardable'
 module ExtmkHelper
+  class MkmfContext
+    extend Forwardable
+    def initialize
+      @values = {}
+    end
+
+    def_delegators(:@values, :[], :[]=)
+
+    attr_reader :values
+    protected :values
+
+    def dup
+      copy = MkmfContext.new
+      self.values.each do |k, v|
+        copy.values[k] = v.dup
+      end
+      copy
+    end
+  end
+
   class ThreadLocalConfig < BasicObject
     def initialize(name, value)
       @name = name.to_sym
       value.class.include IdentityHelper
-      ::Thread.current[@name] = value
+      ::Thread.mkmf_context[@name] = value
     end
     class << self
       private :new
@@ -45,11 +66,11 @@ module ExtmkHelper
 
     def __tlc_value=(value)
       value.class.include IdentityHelper
-      ::Thread.current[@name] = value
+      ::Thread.mkmf_context[@name] = value
     end
 
     def __tlc_value
-      ::Thread.current[@name]
+      ::Thread.mkmf_context[@name]
     end
 
     def kind_of?(mod)
@@ -88,11 +109,12 @@ module ExtmkHelper
   end
 end
 
-if $0 == __FILE__
-  o = Object.new
-  cfg = ExtmkHelper::ThreadLocalConfig.new(:hoge, o)
-  p o == o
-  #p cfg.kind_of?(Object)
-  #p cfg.kind_of?(ExtmkHelper::ThreadLocalConfig)
-  p o == cfg
+class Thread
+  def self.set_mkmf_context(context)
+    current[:__mkmf_context] = context
+  end
+
+  def self.mkmf_context
+    current[:__mkmf_context]
+  end
 end

@@ -5,6 +5,10 @@ require_relative '../../ext/thread_local_config'
 class ThreadLocalConfigTest < Test::Unit::TestCase
   include ExtmkHelper
 
+  def setup
+    Thread.set_mkmf_context(MkmfContext.new)
+  end
+
   def dummy_obj(name = 'dummy')
     obj = Object.new
     obj.singleton_class.class_eval do
@@ -76,7 +80,9 @@ class ThreadLocalConfigTest < Test::Unit::TestCase
     begin
       mu = Mutex.new
       cond = ConditionVariable.new
+      ctx = Thread.mkmf_context
       th = Thread.new do
+        Thread.set_mkmf_context(ctx.dup)
         mu.synchronize {
           obj2 = dummy_obj("dummy 2")
           $tlc_var = obj2
@@ -132,6 +138,41 @@ class ThreadLocalConfigTest < Test::Unit::TestCase
       assert_equal obj, LIBS
       assert !(obj != LIBS)
       assert obj.eql?(LIBS)
+    ensure
+      self.class.class_eval do
+        remove_const(:LIBS)
+      end
+    end
+  end
+
+  def test_thread_local_const
+    obj = []
+    self.class.const_set(:LIBS, obj)
+    begin
+      ThreadLocalConfig.hook_const(self.class, :LIBS)
+      mu = Mutex.new
+      cond = ConditionVariable.new
+      ctx = Thread.mkmf_context
+      th = Thread.new do
+        Thread.set_mkmf_context(ctx.dup)
+        mu.synchronize {
+          LIBS << "libpthread" << "libz"
+          cond.signal
+        }
+      end
+
+      begin
+        mu.synchronize {
+          cond.wait(mu)
+          LIBS << "libc" << "libm"
+          expected = %w[ libc libm ]
+          assert_equal expected, LIBS
+          assert !(expected != LIBS)
+          assert expected.eql?(LIBS)
+        }
+      ensure
+        th.join
+      end
     ensure
       self.class.class_eval do
         remove_const(:LIBS)
