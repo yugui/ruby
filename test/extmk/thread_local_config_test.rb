@@ -101,4 +101,41 @@ class ThreadLocalConfigTest < Test::Unit::TestCase
       untrace.()
     end
   end
+
+  def test_fake_identity_to_original_const
+    obj = []
+    self.class.const_set(:LIBS, obj)
+    begin
+      ThreadLocalConfig.hook_const(self.class, :LIBS)
+
+      assert LIBS.kind_of?(ThreadLocalConfig)
+      assert_equal obj, LIBS
+      assert !(obj != LIBS)
+      assert_equal obj.object_id, LIBS.object_id
+      assert_equal obj.class, LIBS.class
+      assert obj.eql?(LIBS)
+    ensure
+      self.class.class_eval do
+        remove_const(:LIBS)
+      end
+    end
+  end
+
+  def test_modify_const
+    obj = []
+    self.class.const_set(:LIBS, obj)
+    begin
+      ThreadLocalConfig.hook_const(self.class, :LIBS)
+
+      LIBS << "libc" << "libm"
+
+      assert_equal obj, LIBS
+      assert !(obj != LIBS)
+      assert obj.eql?(LIBS)
+    ensure
+      self.class.class_eval do
+        remove_const(:LIBS)
+      end
+    end
+  end
 end

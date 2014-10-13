@@ -2,6 +2,7 @@ module ExtmkHelper
   class ThreadLocalConfig < BasicObject
     def initialize(name, value)
       @name = name.to_sym
+      value.class.include IdentityHelper
       ::Thread.current[@name] = value
     end
     class << self
@@ -24,9 +25,11 @@ module ExtmkHelper
 
       raise ::NameError, "variable #{name} already traced" unless untrace_var(name).empty?
       t = trace_var(name) do |val|
-        return if config.equal?(val)
-        config.__tlc_value = val
+        next if config.equal?(val)
+        # NOTE: race condition since the assignment happens until this re-installation gets done.
+        # TODO(yugui) reimplement with rb_define_hooked_variable in dmyext.c.
         eval("->(val) { #{name} = val }")[config]
+        config.__tlc_value = val
       end
 
       -> { untrace_var(name) }
@@ -34,13 +37,14 @@ module ExtmkHelper
 
     def self.hook_const(mod = Object, name)
       name = name.to_s
-      raise ::NameError, "invalid constant name #{name}" unless name[/\A\$[A-Z]\w*\z/]
+      raise ::NameError, "invalid constant name #{name}" unless name[/\A[A-Z]\w*\z/]
       config = new(name, mod.const_get(name))
       mod.send(:remove_const, name)
       mod.const_set(name, config)
     end
 
     def __tlc_value=(value)
+      value.class.include IdentityHelper
       ::Thread.current[@name] = value
     end
 
@@ -64,16 +68,23 @@ module ExtmkHelper
       __tlc_value.__send__(msg, *args, &blk)
     end
   end
-  Object.class_eval do
-    orig = instance_method(:==)
-    define_method(:==) do |rhs|
-      if rhs.kind_of?(ExtmkHelper::ThreadLocalConfig)
-        orig.bind(self).call(rhs.__tlc_value)
-      else
-        orig.bind(self).call(rhs)
+
+  module IdentityHelper
+    # TODO(yugui) We can simply use Module#prepend once BASERUBY stops supporting Ruby 1.9.3 or earlier.
+    def self.included(mod)
+      mod.module_eval do
+        [ :==, :eql? ].each do |msg|
+          orig = instance_method(msg)
+          define_method(msg) do |rhs|
+            if rhs.kind_of?(ExtmkHelper::ThreadLocalConfig)
+              orig.bind(self).call(rhs.__tlc_value)
+            else
+              orig.bind(self).call(rhs)
+            end
+          end
+        end
       end
     end
-    alias eql? ==
   end
 end
 
