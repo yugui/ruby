@@ -1022,6 +1022,7 @@ make_passing_arg(int argc, const VALUE *argv)
       case 0:
 	return Qnil;
       case 1:
+      case -1: /* argv[0] is an exception to be raised */
 	return argv[0];
       default:
 	return rb_ary_new4(argc, argv);
@@ -1603,6 +1604,32 @@ rb_fiber_resume(VALUE fibval, int argc, const VALUE *argv)
 }
 
 VALUE
+rb_fiber_raise(VALUE fibval, int argc, const VALUE *argv)
+{
+    VALUE exc;
+    rb_fiber_t *fib;
+    GetFiberPtr(fibval, fib);
+
+    if (fib->prev != 0 || fib->cont.type == ROOT_FIBER_CONTEXT) {
+	rb_raise(rb_eFiberError, "double resume");
+    }
+    if (fib->transferred != 0) {
+	rb_raise(rb_eFiberError, "cannot resume transferred Fiber");
+    }
+
+    /* TODO(yugui) support :cause kwarg as Kernel#raise does */
+    exc = rb_make_exception(argc, argv);
+
+    return fiber_switch(fib, -1, &exc, 1);
+}
+
+VALUE
+fiber_raise(int argc, const VALUE *argv, VALUE self)
+{
+    rb_fiber_raise(self, argc, argv);
+}
+
+VALUE
 rb_fiber_yield(int argc, const VALUE *argv)
 {
     return fiber_switch(return_fiber(), argc, argv, 0);
@@ -1803,6 +1830,7 @@ Init_Cont(void)
     rb_define_singleton_method(rb_cFiber, "yield", rb_fiber_s_yield, -1);
     rb_define_method(rb_cFiber, "initialize", rb_fiber_init, 0);
     rb_define_method(rb_cFiber, "resume", rb_fiber_m_resume, -1);
+    rb_define_method(rb_cFiber, "raise", fiber_raise, -1);
     rb_define_method(rb_cFiber, "to_s", fiber_to_s, 0);
     rb_define_alias(rb_cFiber, "inspect", "to_s");
 }
