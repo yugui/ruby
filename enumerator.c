@@ -713,6 +713,31 @@ get_next_values(VALUE obj, struct enumerator *e)
     return vs;
 }
 
+static VALUE
+enumerator_raise(int argc, VALUE *argv, VALUE self)
+{
+    VALUE vs;
+    struct enumerator *e = enumerator_ptr(self);
+
+    if (e->stop_exc)
+	rb_exc_raise(e->stop_exc);
+
+    if (!e->fib || !rb_fiber_alive_p(e->fib)) {
+	next_init(self, e);
+    }
+
+    vs = rb_fiber_raise(e->fib, argc, argv);
+    if (e->stop_exc) {
+	e->fib = 0;
+	e->dst = Qnil;
+	e->lookahead = Qundef;
+	e->feedvalue = Qundef;
+	rb_exc_raise(e->stop_exc);
+    }
+    return vs;
+}
+
+
 /*
  * call-seq:
  *   e.next_values   -> array
@@ -2354,6 +2379,7 @@ InitVM_Enumerator(void)
     rb_define_method(rb_cEnumerator, "next", enumerator_next, 0);
     rb_define_method(rb_cEnumerator, "peek", enumerator_peek, 0);
     rb_define_method(rb_cEnumerator, "feed", enumerator_feed, 1);
+    rb_define_method(rb_cEnumerator, "raise", enumerator_raise, -1);
     rb_define_method(rb_cEnumerator, "rewind", enumerator_rewind, 0);
     rb_define_method(rb_cEnumerator, "inspect", enumerator_inspect, 0);
     rb_define_method(rb_cEnumerator, "size", enumerator_size, 0);
